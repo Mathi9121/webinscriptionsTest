@@ -1,0 +1,79 @@
+{% extends '::app.html.twig' %}
+
+{% block title %}
+Gabarits
+{% endblock %}
+
+{% block titre %}
+Gabarits
+{% endblock %}
+
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+'%kernel.root_dir%/Resources/public/css/dataTables.min.css'
+filter='cssrewrite' %}
+<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+'@OCIMExportBundle/Resources/public/js/template/delete-template.js'
+'%kernel.root_dir%/Resources/public/js/jquery-ui.min.js'
+'@OCIMExportBundle/Resources/public/js/template/sort-templates.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block controls %}
+<a href="{{ path('documents_new') }}" class="btn btn-green"><i class='fa fa-plus fa-fw'></i> Nouveau Gabarit</a>
+{% endblock %}
+
+{% block body -%}
+<div class="hide" id="save-order">{{path('document_maj_ordre')}}</div>
+<div id="alert-success" class="tools-message tools-message-green disabledonload">Ordre sauvegardé   ;)</div>
+<div id="alert-error" class="tools-message tools-message-red disabledonload">Problème lors de l'enregistrement !</div>
+<div class="panel">
+  <div class="header">
+  </div>
+  <div class="panel-body">
+    <table class="table-stripped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Créé le </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr class="sortable" data-template-id="{{entity.id}}" data-template-ordre="{{entity.ordre}}">
+                <td><i class="fa fa-reorder fa-fw" style="cursor: move"></i> {{ entity.nom }}</td>
+                <td>
+                  {% if entity.type == "pdf" %}
+                    <i class="fa fa-file-pdf-o fa-fw"></i> Pdf
+                  {% else %}
+                    <i class="fa fa-file-pdf-o fa-fw"></i> Convention (.pdf)
+                  {% endif %}
+                </td>
+                <td>{% if entity.date %}{{ entity.date|date('d/m/Y') }}{% endif %}</td>
+                <td class="group">
+                    <span class="right">
+				              <a title="Modifier" href="{{ path('documents_edit', { 'id': entity.id }) }}"><i class="fa fa-pencil fa-border fa-fw"></i></a>
+				              <a title="Copier" data-id="{{entity.id}}" data-nom="{{entity.nom}}" href="#" data-href="{{path('template_copy')}}" class="btn-copy"><i class="fa fa-copy fa-border fa-fw"></i></a>
+				              <a title="Supprimer" href="{{path('documents_delete', {'id': entity.id})}}" class="btn-del"><i class="fa fa-trash fa-border fa-fw"></i></a>
+                    </span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

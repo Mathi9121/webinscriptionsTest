@@ -1,0 +1,30 @@
+personne:
+    path:     /
+    defaults: { _controller: "OCIMContactsBundle:Personne:index" }
+
+personne_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMContactsBundle:Personne:show" }
+
+personne_new:
+    path:     /new
+    defaults: { _controller: "OCIMContactsBundle:Personne:new" }
+
+personne_create:
+    path:     /create
+    defaults: { _controller: "OCIMContactsBundle:Personne:create" }
+    requirements: { _method: post }
+
+personne_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "OCIMContactsBundle:Personne:edit" }
+
+personne_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMContactsBundle:Personne:update" }
+    requirements: { _method: post|put }
+
+personne_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMContactsBundle:Personne:delete" }
+    requirements: { _method: post|delete }

@@ -1,0 +1,29 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block title %}Utilisateur - Edition{% endblock %}
+{% block titre %}Modification de l'utilisateur: {{entity.prenom}}{% endblock %}
+{% block controls %}{{ form(delete_form) }}{% endblock %}
+{% block breadcrumbs %}
+<li><a href="{{path('user')}}">Administrateurs</a></li>
+<li><span>Modification utilisateur</span></li>
+{% endblock %}
+{% block body -%}
+{{form_start(edit_form)}}
+<div class="units-row">
+    <div class="unit-50 unit-centered">
+		{{ form_row(edit_form.nom) }}
+		{{ form_row(edit_form.prenom) }}
+		{{ form_row(edit_form.mail) }}
+		{{ form_row(edit_form.login) }}
+		{{ form_row(edit_form.password) }}
+	</div>
+</div>
+<hr/>
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('user') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour</a></div>
+	<div class="right">{{form_widget(edit_form.submit)}}</div>
+</footer>
+{{ form_rest(edit_form) }}
+{{ form_end(edit_form) }}
+{% endblock %}

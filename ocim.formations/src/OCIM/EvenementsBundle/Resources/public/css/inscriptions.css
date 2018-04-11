@@ -1,0 +1,206 @@
+tr.statut.attente{background-color: rgba(255,165,0, 0.3);}
+tr.statut.valide{background-color: rgba(3, 207, 3,  0.3);}
+tr.statut.annule{background-color: rgba(255, 54, 0, 0.3);}
+tr.statut.attente:hover{background-color: rgba(255,165,0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255,165,0,  0.2);}
+tr.statut.valide:hover{background-color: rgba(3, 207, 3,  0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(3, 207, 3,  0.2)}
+tr.statut.annule:hover{background-color: rgba(255, 54, 0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255, 54, 0, 0.2)}
+
+#champPerso table thead tr th{text-align:center;}
+
+td.insc.actions{background-color: #f6f6f6}
+td.insc.info{
+	font-weight: 600;
+	text-shadow: 0 0 2px #B5B5B5;
+}
+td{white-space:nowrap}
+td.attente-text{
+	width: 550px;
+	width: 550px !important;
+	min-width: 550px !important;
+	white-space:normal;
+	white-space:normal !important;
+}
+td.handle, th.handle{padding-right:0}
+td.handle{color: #6f6f6f; cursor: move}
+
+
+td.champPerso{cursor: pointer; text-align:center;}
+td.undefined{cursor: not-allowed; background-color: rgba(125,125,125, 0.2)}
+td.champPerso[data-type="text"]{
+	cursor: text;
+	max-width: 230px;
+	white-space: normal;
+}
+td.nuit, th.nuit {
+	font-weight: bold;
+}
+
+span.champPerso{
+	text-shadow: 0 0 2px #FFFFFF;
+	font-size: 16pt;
+}
+span.champPerso.ok{ color: rgba(3, 207, 3,  1);}
+span.champPerso.zero{color: rgba(255, 54, 0, 1);}
+
+tr.selected{
+	background-color: #f1f1f1 !important;
+}
+
+tfoot tr td{text-align:center;}
+
+
+/* boite détails dune inscription */
+div.details-inscription{
+	background-color: #f1f1f1;
+	padding: 15px;
+	padding-bottom: 0px;
+}
+
+div.details-inscription h2{
+	text-align: center;
+	font-variant: normal;
+	color: #555555;
+}
+
+/***** popup ******/
+
+.white-popup{
+	position: relative;
+	background: #FFF;
+	padding: 20px;
+	width: auto;
+	max-width: 500px;
+	margin: 20px auto;
+}
+
+.white-popup .choix span{
+	padding: 5px 15px;
+	margin : 5px;
+	cursor: pointer;
+}
+.white-popup .choix span.attente{background-color:rgba(255,165,0, 0.5)}
+.white-popup .choix span.valide{background-color:rgba(3, 207, 3,  0.5)}
+.white-popup .choix span.annule{background-color:rgba(255, 54, 0, 0.5)}
+.white-popup .choix span.attente:hover{background-color: rgba(255,165,0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255,165,0,  0.2);}
+.white-popup .choix span.valide:hover{background-color: rgba(3, 207, 3,  0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(3, 207, 3,  0.2)}
+.white-popup .choix span.annule:hover{background-color: rgba(255, 54, 0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255, 54, 0, 0.2)}
+
+
+.white-popup .choix span.selected{
+	outline: 5px solid grey
+}
+
+.white-popup .choix span.saispas{background-color:rgba(255,165,0, 0.5)}
+.white-popup .choix span.oui{background-color:rgba(3, 207, 3,  0.5)}
+.white-popup .choix span.non{background-color:rgba(255, 54, 0, 0.5)}
+.white-popup .choix span.saispas:hover{background-color: rgba(255,165,0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255,165,0,  0.2);}
+.white-popup .choix span.oui:hover{background-color: rgba(3, 207, 3,  0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(3, 207, 3,  0.2)}
+.white-popup .choix span.non:hover{background-color: rgba(255, 54, 0, 0.5);-webkit-box-shadow: 0 0 5px 2px #B8B4B4;box-shadow: 0 0 5px 2px rgba(255, 54, 0, 0.2)}
+
+
+/******** menu, splitted button *********/
+#controls .btn.btn-green{
+	margin-right: -0.3em;
+	border-bottom-left-radius: 4px;
+	border-top-left-radius: 4px;
+	border-bottom-right-radius: 0px;
+	border-top-right-radius: 0px;
+}
+#controls .btn.list{
+	margin-right: -0.3em;
+	border-bottom-right-radius: 4px;
+	border-top-right-radius: 4px;
+	border-bottom-left-radius: 0px;
+	border-top-left-radius: 0px;
+border-left: 1px solid #CECACA;
+}
+
+.ui-menu .ui-menu-item {
+		position: relative;
+		margin: 0px;
+		padding: 3px 1em 3px 0.4em;
+		cursor: pointer;
+		min-height: 0px;
+}
+
+.ui-menu {
+		position: absolute;
+		background-color: white;
+}
+.ui-widget-content {
+		border: 1px solid #AAA;
+		color: #222;
+}
+
+.ui-menu {
+		list-style: outside none none;
+		padding: 0px;
+		margin: 0px;
+		display: block;
+		outline: medium none;
+}
+.ui-state-focus{
+	background: #dadada;
+	font-weight: normal;
+	color: #212121;
+}
+.ui-buttonset {
+		margin-right: 7px;
+}
+.ui-menu a{
+		text-decoration:none;
+		display:block;
+}
+
+.tableFloatingHeaderOriginal{
+	background-color: white ! important;
+	margin-top:58px !important;
+}
+
+/* comptes */
+ul#comptes li{
+	margin-bottom: 0px
+}
+ul#comptes li p{
+	text-align: center;
+	margin:0px;
+	font-variant: small-caps;
+	color: #999;
+	font-weight: 600
+}
+ul#comptes li div{
+	height: 50px;
+	overflow: hidden;
+	cursor: default;
+}
+ul#comptes li div>div{
+	background-color: white;
+	border-right: 1px solid #EDE6E6;
+}
+ul#comptes li.statuts div>div.attente{background-color: rgba(255,165,0, 0.3);}
+ul#comptes li.statuts div>div.valide{background-color: rgba(3, 207, 3,  0.3);}
+ul#comptes li.statuts div>div.annule{background-color: rgba(255, 54, 0, 0.3);}
+ul#comptes li div > p {
+  font-size: 30px;
+  color: rgb(131, 130, 130);
+  line-height: 50px;
+}
+ul#comptes li div>div:last-child{
+	border-right: 0px
+}
+
+ul#comptes li div > p.aide {
+	font-size: 16px;
+	line-height: 16px;
+	margin-top: 8px;
+	text-align:center;
+}
+ul#comptes li div>div.attente p{color: rgba(255,165,0, 0.8);}
+ul#comptes li div>div.valide p{color: rgba(3, 207, 3,  0.8);}
+ul#comptes li div>div.annule p{color: rgba(255, 54, 0, 0.8);}
+
+ul#comptes li p.info{
+	font-variant: none;
+	font-size: 8pt;
+	font-style: italic;
+}

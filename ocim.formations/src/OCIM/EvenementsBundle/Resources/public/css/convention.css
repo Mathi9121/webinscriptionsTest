@@ -1,0 +1,29 @@
+.etape-convention{
+  border-right: 1px solid #EEE;
+  border-left: 1px solid #EEE;
+}
+
+.num-convention{
+
+}
+.num-convention span{
+  font-weight:bold;
+  font-size:1.3em;
+  vertical-align:middle;
+}
+
+tr:not(.strike) .no-convention:hover,tr:not(.strike) .etape-convention:hover,tr:not(.strike) .num-convention:hover,tr:not(.strike) .edition-convention:hover{
+  background-color: #eeeeee;
+  cursor: pointer;
+}
+.etape-convention{
+
+}
+.etape-convention.valide{
+  background-color: #C6FFA9
+}
+
+.strike{
+  opacity: 0.7;
+  text-decoration: line-through;
+}

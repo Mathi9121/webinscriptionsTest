@@ -1,0 +1,19 @@
+OCIM\ContactsBundle\Entity\TagStructure:
+    type: entity
+    manyToMany:
+        structures:
+            targetEntity: Adresse
+            mappedBy: tags
+    table: null
+    repositoryClass: OCIM\ContactsBundle\Entity\TagStructureRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        tag:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

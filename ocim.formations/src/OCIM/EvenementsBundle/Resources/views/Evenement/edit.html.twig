@@ -1,0 +1,99 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% stylesheets
+'%kernel.root_dir%/Resources/public/css/popup.css'
+	filter='cssrewrite' %}
+<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+	'%kernel.root_dir%/Resources/public/js/popup.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Evenement/formEvenement.js'%}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{# Titres #}
+{% block title %}Edition - {{ entity.intitule }}{% endblock %}
+{% block titre %}Edition : {{ entity.intitule }}{% endblock %}
+
+{# Controls #}
+{% block controls %}
+{{ form(delete_form) }}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><span>Edition</span></li>
+{% endblock %}
+
+{% block body %}
+
+<form action="{{ path('evenement_update', {'id' : entity.id}) }}" method="post" class="forms units-row" {{ form_enctype(edit_form) }}>
+<input type="hidden" name="_method" value="PUT" />
+
+<div class="units-row">
+
+	<div class="unit-60 panel">
+			<div class="header">
+			<span class="titre">Evenement</span>
+				<span class="controls right group">
+
+				</span>
+		</div>
+		<div class="panel-body">
+			{{ form_row(edit_form.intitule) }}
+			<div class="units-row end">
+				<div class="unit-70">
+					{{ form_row(edit_form.type) }}
+				</div>
+				<div class="unit-30">
+					<label for="ajouttype">&nbsp;
+						<a href="#" id="ajouttype" class="btn btn-small width-100" data-url="{{path('evenement_addtype')}}"><i class="fa fa-plus"></i>Ajouter un type</a>
+					</label>
+				</div>
+			</div>
+			{{ form_row(edit_form.lieu) }}
+			<div class="units-row end">
+				<div class="unit-50">{{ form_row(edit_form.dateDebut) }}</div>
+				<div class="unit-50">{{ form_row(edit_form.dateFin) }}</div>
+			</div>
+			<div class="units-row end">
+				<div class="unit-50">{{ form_row(edit_form.dateText) }}</div>
+				<div class="unit-25">{{ form_row(edit_form.nbHeures) }}</div>
+				<div class="unit-25">{{ form_row(edit_form.nbJours) }}</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="unit-40 panel">
+		<div class="header">
+				<span class="titre">Formules liées à la evenement</span>
+					<span class="controls right group">
+						<a href="#" class="btn btn-small ajouterFormule"><i class="fa fa-plus"></i>Formule existante</a>
+						<a href="#" class="btn btn-small" id="nouvelleFormule" data-url="{{ path('formule_create') }}"><i class="fa fa-plus"></i>Nouvelle formule</a>
+					</span>
+		</div>
+		<div class="panel-body">
+			{{ form_widget(edit_form.evenementFormule) }}
+		</div>
+	</div>
+</div>
+
+
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('evenement') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour à la liste des evenements</a></div>
+	<div class="right">{{ form_widget(edit_form.submit) }}</div>
+</footer>
+
+{{ form_rest(edit_form) }}
+</form>
+
+{% endblock %}

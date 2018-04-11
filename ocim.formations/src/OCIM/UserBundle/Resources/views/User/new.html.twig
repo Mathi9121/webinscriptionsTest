@@ -1,0 +1,31 @@
+{% extends '::app.html.twig' %}
+{% form_theme form '::form.html.twig' %}
+
+{% block title %}Utilisateur - Ajout{% endblock %}
+{% block titre %}Nouvel Utilisateur{% endblock %}
+{% block controls %}{% endblock %}
+{% block breadcrumbs %}
+<li><a href="{{path('user')}}">Administrateurs</a></li>
+<li><span>Nouvel utilisateur</span></li>
+{% endblock %}
+{% block body -%}
+{{form_start(form)}}
+<div class="units-row">
+    <div class="unit-50 unit-centered">
+		{{ form_row(form.nom) }}
+		{{ form_row(form.prenom) }}
+		{{ form_row(form.mail) }}
+		{{ form_row(form.login) }}
+		{{ form_row(form.password) }}
+
+	</div>
+
+</div>
+<hr/>
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('user') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour</a></div>
+  <div class="right">{{form_widget(form.submit)}}</div>
+</footer>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+{% endblock %}

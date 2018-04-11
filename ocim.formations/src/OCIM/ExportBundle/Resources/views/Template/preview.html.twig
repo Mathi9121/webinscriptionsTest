@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+{% block stylesheets %}
+  {% stylesheets '%kernel.root_dir%/Resources/public/css/kube.min.css'
+  filter="cssrewrite" %}
+  <link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+  {% endstylesheets %}
+  {% stylesheets '%kernel.root_dir%/Resources/public/css/font-awesome.min.css' %}
+  <link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+  {% endstylesheets %}
+{% endblock %}
+<style>
+html, body{
+  background-color: #ddd;
+  font-family: "serif";
+}
+#wrapper{
+  width: 210mm;
+  margin: 60px auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 5px 2px #C4C4C4;
+  box-shadow: 0 0 5px 2px #C4C4C4;
+  border: 0.7cm solid white;
+}
+#controls{
+  width:100%;
+  background-color: #fff;
+  position: fixed;
+  bottom:0;
+  z-index: 1000;
+  height: 50px;
+  line-height: 50px;
+  text-align:center
+}
+#filename{
+margin-right: 50px
+}
+div.pagebreak{
+  height: 5px;
+border-bottom: 1px dashed grey;
+}
+.btn{
+  vertical-align:middle;
+}
+form{
+  display:inline-block;
+
+}
+</style>
+</head>
+<body style='margin:0px'>
+<div id="controls" class="group">
+  <form id="export" action="{{path('documents_exportfrompreview')}}" method="post"><label for="filename">Nom de fichier : </label><input type="text" value="{{filename}}" name="filename" id="filename"/><input type="submit" class="btn btn-green" id="export" value="Exporter"/></form>
+</div>
+<div id="wrapper" contenteditable>
+  {{contenu|raw}}
+</div>
+<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script type="text/javascript">
+tinymce.init({
+  selector: "div#wrapper",
+  inline: true,
+  mode: 'textareas',
+  theme: "modern",
+  force_br_newlines : false,
+  force_p_newlines : false,
+  forced_root_block : '',
+  pagebreak_separator:"<div class='pagebreak'></div>",
+  plugins: [
+       "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+       "searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+       "save table contextmenu directionality emoticons template paste textcolor"
+ ],
+  toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+});
+</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+{% block javascripts %}
+{% javascripts '@OCIMExportBundle/Resources/public/js/template/exportfrompreview.js' %}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,39 @@
+{% extends '::app.html.twig' %}
+
+
+{% block title %}Administrateurs{% endblock %}
+{% block titre %}Administrateurs de l'application{% endblock %}
+{% block controls %}<a class='btn btn-green' href="{{ path('user_new') }}"><i class="fa fa-plus fa-fw"></i>Nouvel Utilisateur</a>{% endblock %}
+
+{% block breadcrumbs %}
+<li><span>Administrateurs</span></li>
+{% endblock %}
+
+{% block body -%}
+    <table class="table-striped table width-80">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Prenom / Nom</th>
+                <th>Login</th>
+                <th>Adresse Mail</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td>{{ entity.id }}</td>
+                <td>{{ entity.prenom|capitalize }} {{ entity.nom|capitalize}}</td>
+                <td>{{ entity.login }}</td>
+                <td><a href="mailto:{{ entity.mail }}">{{ entity.mail }}</a></td>
+                <td>
+                        {# <a href="{{ path('user_show', { 'id': entity.id }) }}">show</a> #}
+                        <a href="{{ path('user_edit', { 'id': entity.id }) }}" class="btn btn-smaller"><i class="fa fa-pencil fa-fw"></i>Modifier</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

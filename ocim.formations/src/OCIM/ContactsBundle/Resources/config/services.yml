@@ -1,0 +1,7 @@
+parameters:
+#    ocim_contacts.example.class: OCIM\ContactsBundle\Example
+
+services:
+#    ocim_contacts.example:
+#        class: %ocim_contacts.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,19 @@
+OCIM\ContactsBundle\Entity\TypeStructure:
+    type: entity
+    oneToMany:
+        adresse:
+            targetEntity: Adresse
+            mappedBy: type
+    table: null
+    repositoryClass: OCIM\ContactsBundle\Entity\TypeStructureRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

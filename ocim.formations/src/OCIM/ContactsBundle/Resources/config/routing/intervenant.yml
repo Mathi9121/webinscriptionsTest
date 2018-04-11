@@ -1,0 +1,30 @@
+intervenants:
+    path:     /
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:index" }
+
+intervenants_show:
+    path:     /evenement-{idevenement}/{id}/show
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:show" }
+
+intervenants_new:
+    path:     evenement/{idevenement}/new
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:new", idevenement: 'null' }
+
+intervenants_create:
+    path:     /evenement-{idevenement}/create/
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:create" }
+    requirements: { _method: post }
+
+intervenants_edit:
+    path:     /evenement/{idevenement}/{id}/edit
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:edit", idevenement: 'null' }
+
+intervenants_update:
+    path:     /evenement-{idevenement}/{id}/update
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:update" }
+    requirements: { _method: post|put }
+
+intervenants_delete:
+    path:     /evenement-{idevenement}/{id}/delete
+    defaults: { _controller: "OCIMContactsBundle:Intervenant:delete" }
+    requirements: { _method: post|delete }

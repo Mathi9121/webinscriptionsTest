@@ -1,0 +1,4 @@
+OCIM\EvenementsBundle\Entity\Event:
+    type: entity
+    table: null
+    lifecycleCallbacks: {  }

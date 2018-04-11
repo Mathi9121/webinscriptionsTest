@@ -1,0 +1,41 @@
+OCIM\EvenementsBundle\Entity\ModeleChampPerso:
+    type: entity
+    oneToMany:
+        reponses:
+            targetEntity: ReponsesChampPerso
+            mappedBy: modele
+            cascade: ['all']
+    manyToMany:
+        evenementFormule:
+            cascade: ['persist']
+            targetEntity: evenementFormule
+            mappedBy: modeles
+    manyToOne:
+        evenement:
+            targetEntity: Evenement
+            inversedBy: modelesIntervenants
+            joinColumn:
+                name: evenement_id
+                referencedColumnName: id
+    table: null
+    repositoryClass: OCIM\EvenementsBundle\Entity\ModeleChampPersoRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        date:
+            type: datetime
+            nullable: true
+        description:
+            type: string
+            length: 255
+        typeReponse:
+            type: string
+            length: 255
+        ordre:
+            type: integer
+            nullable: true
+    lifecycleCallbacks: {  }

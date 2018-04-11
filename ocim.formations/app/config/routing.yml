@@ -1,0 +1,49 @@
+ocim_contacts:
+    resource: "@OCIMContactsBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ocim_export:
+    resource: "@OCIMExportBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ocim_user:
+    resource: "@OCIMUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ocim_evenements:
+    resource: "@OCIMEvenementsBundle/Resources/config/routing.yml"
+    prefix:   /
+
+OCIMEvenementsBundle_evenement:
+    resource: "@OCIMEvenementsBundle/Resources/config/routing/evenement.yml"
+    prefix:   /e
+
+OCIMEvenementsBundle_formule:
+    resource: "@OCIMEvenementsBundle/Resources/config/routing/formule.yml"
+    prefix:   /formule
+
+OCIMEvenementsBundle_inscription:
+    resource: "@OCIMEvenementsBundle/Resources/config/routing/inscription.yml"
+    prefix:   /evenement-{idevenement}/inscriptions
+
+OCIMContactsBundle_personne:
+    resource: "@OCIMContactsBundle/Resources/config/routing/personne.yml"
+    prefix:   /personne
+
+OCIMUserBundle_user:
+    resource: "@OCIMUserBundle/Resources/config/routing/user.yml"
+    prefix:   /user
+
+connexion:
+    pattern: /connexion
+    defaults: { _controller: OCIMUserBundle:Admin:connexion }
+
+check:
+    pattern: /check
+
+deconnexion:
+    pattern: /deconnexion
+
+home:
+    pattern: /
+    defaults: { _controller: OCIMEvenementsBundle:Default:index }

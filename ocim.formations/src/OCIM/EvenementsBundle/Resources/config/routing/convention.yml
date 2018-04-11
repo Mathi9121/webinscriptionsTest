@@ -1,0 +1,45 @@
+convention:
+    path:     /{slug}
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:index", slug:1}
+
+convention_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:show" }
+
+convention_new:
+    path:     /inscription-{idinscription}/new
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:new" }
+
+convention_create:
+    path:     /inscription-{idinscription}/create
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:create" }
+    requirements: { _method: post }
+
+convention_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:edit" }
+
+convention_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:update" }
+    requirements: { _method: post|put }
+
+convention_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:delete" }
+    requirements: { _method: post|delete }
+
+convention_derniernumero:
+    path:     /ajax/derniernumero
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:derniernumero" }
+    requirements: { _method: post }
+
+convention_createConvention:
+    path:     /ajax/createConvention
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:createConvention" }
+    requirements: { _method: post }
+
+convention_updateetape:
+    path:     /ajax/updateConvention
+    defaults: { _controller: "OCIMEvenementsBundle:Convention:updateConvention" }
+    requirements: { _method: post }

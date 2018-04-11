@@ -1,0 +1,57 @@
+OCIM\ContactsBundle\Entity\Adresse:
+    type: entity
+    manyToMany:
+        tags:
+            targetEntity: TagStructure
+            inversedBy: structures
+            cascade: ["all"]
+            joinTable:
+                name: adresses_tags
+                joinColumns:
+                    adresse_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    tagStructure_id:
+                        referencedColumnName: id
+    manyToOne:
+        type:
+            targetEntity: TypeStructure
+            inversedBy: adresse
+            joinColumn:
+                name: type_id
+                referencedColumnName: id
+    table: null
+    repositoryClass: OCIM\ContactsBundle\Entity\AdresseRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nomStructure:
+            type: string
+            length: 255
+            nullable: true
+        adresse:
+            type: string
+            length: 255
+            nullable: true
+        adresseComplement:
+            type: string
+            length: 255
+            nullable: true
+        cP:
+            type: string
+            length: 255
+            column: CP
+            nullable: true
+        ville:
+            type: string
+            length: 255
+            nullable: true
+        pays:
+            type: string
+            length: 255
+            nullable: true
+    lifecycleCallbacks: {  }

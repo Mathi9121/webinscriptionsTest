@@ -1,0 +1,29 @@
+OCIM\EvenementsBundle\Entity\Formule:
+    type: entity
+    table: null
+    oneToMany:
+        evenementFormule:
+            targetEntity: evenementFormule
+            mappedBy: formule
+            fetch: EAGER
+            cascade: ["persist"]
+    repositoryClass: OCIM\EvenementsBundle\Entity\FormuleRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        description:
+            type: text
+        tarif:
+            type: string
+            length: 255
+        midi:
+            type: boolean
+        soir:
+            type: boolean
+        nuit:
+            type: boolean
+    lifecycleCallbacks: {  }

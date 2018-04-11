@@ -1,0 +1,68 @@
+{# MESSAGE DU MAIL #}
+
+<p>Bonjour,</p>
+<p>Vous venez de vous pré-inscrire &agrave; la formation <strong>{{ inscription.evenementformule.evenement.intitule }}</strong>.</p>
+<p>Voici un r&eacute;capitulatif des informations que vous nous avez communiqu&eacute;es :</p>
+
+<table width="700" border="1" style="border-collapse: collapse;border: 1px solid grey" cellpadding="5">
+	<tr>
+		<th>Votre nom</th>
+		<td>{{ inscription.stagiaire.civilite }} {{ inscription.stagiaire.nom|capitalize }} {{ inscription.stagiaire.prenom|capitalize }}</td>
+	</tr>
+	<tr>
+		<th>Votre fonction</th>
+		<td>{{ inscription.stagiaire.fonction|capitalize }}</td>
+	</tr>
+	<tr>
+		<th>Votre Adresse</th>
+		<td>
+			<adresse>
+				{{ inscription.stagiaire.adresse.nomStructure|capitalize }}<br/>
+				{{ inscription.stagiaire.adresse.adresse }}<br/>
+				{{ inscription.stagiaire.adresse.adresseComplement }}<br/>
+				{{ inscription.stagiaire.adresse.cP }} - {{ inscription.stagiaire.adresse.ville|capitalize }} {{ inscription.stagiaire.adresse.pays|capitalize }}
+			</adresse>
+		</td>
+	</tr>
+	<tr>
+		<th>Formule d&apos;h&eacute;bergement choisie</th>
+		<td>
+			{{inscription.evenementformule.formule.description|capitalize}} - {{inscription.evenementformule.formule.tarif}}{% if inscription.evenementformule.formule.tarif|number_format %} &euro;{% endif %}
+		</td>
+	</tr>
+	<tr>
+		<th>Vos informations de contacts</th>
+		<td>
+				Mail : {{inscription.stagiaire.mail}}<br/>
+				Tel : {{inscription.stagiaire.tel}}<br/>
+				{% if inscription.stagiaire.fax %}Fax : {{inscription.stagiaire.fax}}{% endif %}
+		</td>
+	</tr>
+	<tr>
+		<th>Date d'enregistrement de l'inscription</th>
+		<td>{{inscription.dateInscription|date('d/m/Y')}} à {{inscription.dateInscription|date('H:i:s')}}</td>
+	</tr>
+
+	{% if inscription.admin.mail %}
+	<tr>
+		<th>Adresse mail du contact administratif</th>
+		<td>
+			{{inscription.admin.mail|capitalize}}
+		</td>
+	</tr>
+	{% endif %}
+
+	<tr>
+		<th>Vos attentes</th>
+		<td>
+			{{ inscription.attentes }}
+		</td>
+	</tr>
+</table>
+
+<p>L'équipe de l'Ocim se tient disponible pour toute information complémentaire.</p>
+<p></p>
+
+<p>
+
+</p>

@@ -1,0 +1,3 @@
+ocim_export_documents:
+    resource: "@OCIMExportBundle/Resources/config/routing/template.yml"
+    prefix:   /documents

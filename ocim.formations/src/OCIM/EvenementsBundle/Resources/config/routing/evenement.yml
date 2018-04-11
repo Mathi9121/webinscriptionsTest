@@ -1,0 +1,46 @@
+evenement:
+    path:     /{type}/
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:index", type: 'formation' }
+    requirements: { type: formation|event }
+
+evenement_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:show" }
+
+evenement_new:
+    path:     /{type}/new
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:new", type: 'formation' }
+    requirements: { type: formation|event }
+
+evenement_create:
+    path:     /create
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:create" }
+    requirements: { _method: post }
+
+evenement_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:edit" }
+
+evenement_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:update" }
+    requirements: { _method: post|put }
+
+evenement_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:delete" }
+    requirements: { _method: post|delete }
+
+evenement_addtype:
+    path:     /nouveau-type
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:ajoutType" }
+    requirements: { _method: post }
+
+evenement_addintervenants:
+    path:     /{idevenement}/intervenant
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:indexIntervenantEvenement" }
+
+evenement_intervenants_update:
+    path:     /{idevenement}/intervenant_update
+    defaults: { _controller: "OCIMEvenementsBundle:Evenement:updateIntervenantEvenement" }
+    requirements: { _method: put }

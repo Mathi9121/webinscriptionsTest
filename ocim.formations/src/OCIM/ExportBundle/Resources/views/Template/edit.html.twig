@@ -1,0 +1,83 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block javascripts %}
+{{parent()}}
+	<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+	{% javascripts '@OCIMExportBundle/Resources/public/js/template/*' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
+
+{% block title %}
+Edition Gabarit
+{% endblock %}
+
+{% block titre %}
+Edition Gabarit
+{% endblock %}
+
+{% block controls %}
+{{ form(delete_form) }}
+{% endblock %}
+
+
+{% block body -%}
+
+{{form_start(edit_form)}}
+
+<div class="panel">
+	<div class="header">
+		<span class="titre">Configuration du fichier</span>
+	</div>
+	<div class="panel-body">
+		<div class="units-row">
+			<div class="unit-80">
+				{{ form_row(edit_form.nom) }}
+			</div>
+			<div class="unit-20">
+				{{ form_row(edit_form.type) }}
+			</div>
+		</div>
+		<label>Nom de fichier
+			<ul class="forms-inline-list">
+				<li class="width-80">
+					{{ form_widget(edit_form.filename) }}
+				</li>
+				<li>
+					<a href="#" class="btn btn-smaller" data-tools="dropdown" data-target="#variables">Insérer...</a>
+				</li>
+			</ul>
+		</label>
+		<ul id="variables" class="dropdown">
+			<li><a href="#" class="variable" data-var="evenement.intitule">Evenement : Intitulé</a></li>
+			<li><a href="#" class="variable" data-var="evenement.id">Evenement : Id</a></li>
+			<li class="divider"></li>
+			<li><a href="#" class="variable" data-var="inscription.stagiaire.nom">Inscription : Nom</a></li>
+			<li><a href="#" class="variable" data-var="inscription.stagiaire.prenom">Inscription : Prénom</a></li>
+			<li class="divider"></li>
+			<li><a href="#" class="variable" data-var="inscription.convention.numeroToString">Convention : Numéro</a></li>
+		</ul>
+	</div>
+</div>
+<hr/>
+<div class="panel">
+	<div class="header">
+		<span class="titre">Gabarit</span>
+	</div>
+	<div class="panel-body">
+		{{form_widget(edit_form.contenu)}}
+	</div>
+</div>
+
+
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('documents') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour aux gabarits<a></div>
+	<div class="right">{{form_widget(edit_form.submit)}}</div>
+</footer>
+
+	{{form_rest(edit_form)}}
+	{{form_end(edit_form)}}
+
+{% endblock %}

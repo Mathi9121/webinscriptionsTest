@@ -1,0 +1,32 @@
+OCIM\ExportBundle\Entity\Template:
+    type: entity
+    table: null
+    repositoryClass: OCIM\ExportBundle\Entity\TemplateRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nom:
+            type: string
+            length: 255
+        type:
+            type: string
+            length: 255
+        date:
+            type: datetime
+            nullable: true
+        filename:
+            type: string
+            length: 255
+            nullable: true
+        contenu:
+            type: text
+            nullable: true
+        ordre:
+            type: integer
+            options:
+                default: 0
+    lifecycleCallbacks: { prePersist: [onPrePersist] }

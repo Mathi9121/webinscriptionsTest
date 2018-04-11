@@ -1,0 +1,86 @@
+/* Chrome, Safari, Opera */
+@-webkit-keyframes color {
+		from {color:#999999;}
+		to {color:#e52f23;}
+}
+
+/* Standard syntax */
+@keyframes color {
+		from {color:#999999;}
+		to {color:#e52f23;}
+}
+#indicateurs>div{
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	height: 100px;
+	background-color: #fff;
+	overflow: hidden;
+}
+
+#indicateurs div>i{
+	background-color: #e52f23;
+	border-radius: 4px 0 0 4px;
+	color: white;
+	line-height: 100px;
+}
+
+#indicateurs div>i, #indicateurs div.count-container{
+	width: 50%;
+	text-align:center;
+	display:inline-block;
+	height:100px;
+}
+
+#indicateurs p{
+	margin: 0;
+	line-height: 1em;
+	margin-top: 18px;
+	color: #666666
+}
+
+#indicateurs p span{
+	display: block;
+	line-height: 1em;
+}
+
+#indicateurs span.count{
+	font-size: 3em;
+}
+
+#indicateurs a{
+	text-decoration : none;
+	color: #E52F23;
+	font-weight: 600;
+	margin-top: 18px;
+}
+
+.evenement-raccourcis a{
+	color:#999999;
+}
+
+.evenement-raccourcis a:hover{
+	color:#e52f23;
+}
+
+#evenements table tbody td{
+	padding: 0.4em 1.1em;
+}
+
+.evenement-raccourcis a.active{
+	animation: color 1s infinite;
+	webkit-animation: color 1s infinite;
+}
+
+span.evenementchoisie{
+	font-size: 10pt;
+	font-style: italic;
+	color: #999999;
+}
+
+@media only screen and (max-width:767px){
+	#indicateurs>div:nth-child(2n){margin-left: 0;}
+	#indicateurs .right{float: right;}
+	#indicateurs .left{float: left;}
+	#indicateurs>div{width:50%; float:left;margin-left: 1%;}
+	#indicateurs>div:nth-child(2n+1){margin-left: 0}
+}

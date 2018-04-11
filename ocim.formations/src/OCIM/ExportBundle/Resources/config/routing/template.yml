@@ -1,0 +1,54 @@
+documents:
+    path:     /
+    defaults: { _controller: "OCIMExportBundle:Template:index" }
+
+documents_show:
+    path:     /{id}/inscription-{idinscription}/{mode}
+    defaults: { _controller: "OCIMExportBundle:Template:show" }
+    requirements: {mode: preview|show}
+
+documents_new:
+    path:     /new
+    defaults: { _controller: "OCIMExportBundle:Template:new" }
+
+documents_create:
+    path:     /create
+    defaults: { _controller: "OCIMExportBundle:Template:create" }
+    requirements: { _method: post }
+
+documents_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "OCIMExportBundle:Template:edit" }
+
+documents_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMExportBundle:Template:update" }
+    requirements: { _method: post|put }
+
+documents_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMExportBundle:Template:delete" }
+
+documents_liens:
+    path:     /liens
+    defaults: { _controller: "OCIMExportBundle:Template:liens" }
+    requirements: { _method: post }
+
+documents_liensconventions:
+    path:     /liens-conventions
+    defaults: { _controller: "OCIMExportBundle:Template:liensConvention" }
+    requirements: { _method: post }
+
+template_copy:
+    path:     /copy
+    defaults: { _controller: "OCIMExportBundle:Template:copie" }
+    requirements: { _method: post }
+
+documents_exportfrompreview:
+    path:     /exportpreview
+    defaults: { _controller: "OCIMExportBundle:Template:exportfrompreview" }
+    requirements: {_method: post}
+document_maj_ordre:
+    path: /maj-order
+    defaults: { _controller: "OCIMExportBundle:Template:majOrdre"}
+    requirements: { _method: post }

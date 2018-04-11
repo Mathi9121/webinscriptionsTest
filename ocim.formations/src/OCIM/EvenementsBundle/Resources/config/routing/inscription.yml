@@ -1,0 +1,54 @@
+inscription:
+    path:     /
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:index" }
+
+inscription_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:show" }
+
+inscription_new:
+    path:     /new
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:new" }
+
+inscription_create:
+    path:     /create
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:create" }
+    requirements: { _method: post }
+
+inscription_edit:
+    path:     /edit-{id}
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:edit" }
+
+inscription_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:update" }
+    requirements: { _method: post|put }
+
+inscription_delete:
+    path:     /inscription-{id}/delete
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:delete" }
+    requirements: { _method: post|delete }
+
+inscription_edit_ordre:
+    path: /ordre
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:ordre" }
+    requirements: { _method: post }
+
+inscription_update_statut_convention:
+    path: /statut-convention/
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:updateStatutConvention" }
+    requirements: { _method: post }
+
+inscription_update_statut_inscription:
+    path: /statut-inscription/
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:updateStatutInscription" }
+    requirements: { _method: post }
+
+inscription_update_statut_financement:
+    path: /statut-financement/
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:updateStatutFinancement" }
+    requirements: { _method: post }
+
+inscription_switch_stagiaire_class:
+    path: /switch-stagiaire-intervenant/{idinscription}
+    defaults: { _controller: "OCIMEvenementsBundle:Inscription:switchStagiaire" }

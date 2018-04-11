@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% image '../app/Resources/public/img/flamme.png' %}
+	<link rel="shortcut icon" type="image/png" href="{{ asset_url }}" />
+{% endimage %}
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>OCIM/Web/Inscription | {% block title %}{% endblock %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- STYLES -->
+	{% block stylesheets %}
+		{% stylesheets '%kernel.root_dir%/Resources/public/css/kube.min.css'
+						'%kernel.root_dir%/Resources/public/css/style.css'
+						'%kernel.root_dir%/Resources/public/css/jquery.datetimepicker.css'
+		filter="cssrewrite" %}
+			<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+		{% endstylesheets %}
+		{% stylesheets '%kernel.root_dir%/Resources/public/css/font-awesome.min.css' %}
+			<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+		{% endstylesheets %}
+	{% endblock %}
+<link href='http://fonts.googleapis.com/css?family=Muli:400,300italic,300,400italic' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,300italic' rel='stylesheet' type='text/css'/>
+<style>
+	*{font-family: 'Muli', sans-serif;}
+	h1,h2,h3,h4,h5,h6{font-family: 'Josefin Sans', sans-serif; font-variant: small-caps}
+</style>
+</head>
+<body>
+
+
+{# MENU TWIG #}
+{% set menu = [
+	{'route': 'home' ,'iconclass' : "fa fa-tachometer", 'menuText': 'Tableau de bord', },
+	{'route': 'evenement' ,'iconclass' : "fa fa-calendar", 'menuText': '' },
+	{'route': 'evenement' ,'iconclass' : "fa fa-graduation-cap", 'menuText': 'Formations', 'param_name': 'type', 'param_value': 'formation' },
+	{'route': 'evenement' ,'iconclass' : "fa fa-calendar", 'menuText': 'Evenements', 'param_name': 'type', 'param_value': 'event' },
+	{'route': 'inscription' ,'iconclass' : "fa fa-users", 'menuText': '' },
+	{'route': 'user' ,'iconclass' : "fa fa-users", 'menuText': '' },
+	{'route': 'intervenant' ,'iconclass' : "fa fa-users", 'menuText': '' },
+	{'route': 'champPerso' ,'iconclass' : "fa fa-table", 'menuText': '' },
+	{'route': 'formule' ,'iconclass' : "fa fa-cutlery", 'menuText': 'Formules'},
+	{'route': 'convention' ,'iconclass' : "fa fa-folder-open", 'menuText': 'Conventions'},
+	{'route': 'structures' ,'iconclass' : "fa fa-university", 'menuText': '' },
+	{'route': 'personne' ,'iconclass' : "fa fa-phone", 'menuText': 'Contacts',
+		'sousmenu':
+		 [
+			{'route': 'personne' ,'iconclass' : "fa fa-user", 'menuText': 'Personnes',  },
+			{'route': 'structure' ,'iconclass' : "fa fa-home", 'menuText': 'Structures',  },
+		 ]
+	},
+	{'route': 'documents' ,'iconclass' : "fa fa-files-o", 'menuText': 'Export et gabarits', },
+] %}
+
+{% set pagevars = '' %}
+
+
+<header class="group" id="header">
+	<div class="left">
+		<a href="#" id="nav-toggle"><i class="fa fa-bars fa-2x"></i></a>
+		<a href="{{path('home')}}" class="logo">
+			{% image '../app/Resources/public/img/logo-header.png' %}
+				<img src="{{ asset_url }}" id="logo" alt="OCIM"/>
+			{% endimage %}
+		</a>
+	</div>
+	<div class="right">
+		<div id="main-btn" class="left hide">
+			<a href="#" id="fullscreen-btn" ><i class="fa fa-arrows-alt fa-border"></i></a>
+		</div>
+		<div id="user" class="right">
+			<a href="#"><i class="fa fa-user fa-2x"></i><span class="username">{{app.user.prenom |capitalize}} {{app.user.nom |capitalize}}</span> <span class="caret"></span></a>
+			<nav class="nav nav-stacked">
+				<ul>
+					<li><a href="{{path('user')}}"><i class="fa fa-users"></i>Gestion des utilisateurs</a></li>
+					<li><a href="{{ path('deconnexion') }}"><i class="fa fa-power-off "></i>Deconnexion</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	{# NAVIGATION MOBILE #}
+	<nav class="navbar navbar-right end">
+		<div class="navigation-toggle" data-tools="navigation-toggle" data-target="#nav-mobile">
+			<span>Menu	{% image '../app/Resources/public/img/logo-header.png' %}
+							<img src="{{ asset_url }}" alt="OCIM" style='height: 40px; margin-left: calc(100% - 280px)'/>
+						{% endimage %}</span>
+		</div>
+	</nav>
+</header>
+
+
+<div id="page" class="group">
+	<div id="sidebar">
+
+		<nav id="nav-mobile" class="nav nav-stacked" data-tools="navigation-fixed">
+			<ul>
+				{% for item in menu %}
+					{% if item.menuText != ""%}
+						<li>
+							{% if (app.request.attributes.get("_route") starts with item.route)and( (item.param_name is defined)? item.param_value == app.request.attributes.get("type"): true) %}
+								<span><i class="fa {{item.iconclass}} fa-fw"></i> {{item.menuText}}</span>
+							{% else %}
+								<a href="{{ (item.param_name is defined)? path(item.route, { (item.param_name): item.param_value } ) : path(item.route) }}"><i class="fa {{item.iconclass}} fa-fw"></i>{{item.menuText}}</a>
+							{% endif %}
+
+							{# SOUSMENU #}
+							{% if (item.sousmenu is defined) %}
+								<ul class="sousmenu hide">
+								{% for menu in item.sousmenu %}
+									{% if (app.request.attributes.get("_route") starts with menu.route) %}
+										<li><span><i class="{{menu.iconclass}} fa-fw"></i>{{menu.menuText}}</span></li>
+									{% else %}
+										<li><a href="{{path(menu.route)}}"><i class="{{menu.iconclass}} fa-fw"></i>{{menu.menuText}}</a></li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+							{% endif %}
+						</li>
+					{% endif %}
+					{% if (app.request.attributes.get("_route") starts with item.route)and( (item.param_name is defined)? item.param_value == app.request.attributes.get("type"): true) %}{% set pagevars = item %}{% endif %}
+				{% endfor %}
+			</ul>
+			<ul class="showonmobile">
+				<li><a href="{{path('user')}}"><i class="fa fa-users"></i>Gestion des utilisateurs</a></li>
+				<li><a href="{{ path('deconnexion') }}"><i class="fa fa-power-off "></i>Deconnexion</a></li>
+			</ul>
+		</nav>
+	</div>
+
+	<div class="contentwrapper">
+	<div role="main" id="content">
+
+		{% if block('titre') %}
+			<div id="titre" class="group" data-tools="navigation-fixed">
+				<div class="left">
+
+				<i class="icon {{ pagevars.iconclass }} fa-fw fa-2x"></i>
+
+					<h2>{% block titre %}{% endblock %}</h2>
+					<nav class="breadcrumbs">
+						<ul>
+							<li><a href="{{path('home')}}"><i class="fa fa-home"></i></a></li>
+							{% if pagevars.menuText != ""%}<li><a href="{{path(pagevars.route)}}"> {{pagevars.menuText}}</a></li>{% endif %}
+							{% if block('breadcrumbs') %}{% block breadcrumbs %}{% endblock %}{% endif %}
+						</ul>
+					</nav>
+				</div>
+				<div id="controls" class="group right">{% block controls %}{% endblock %}</div>
+			</div>
+		{% endif %}
+
+
+
+	{# contenu #}
+		{% block body %}
+		{% endblock %}
+	</div>
+	</div>
+</div>
+
+	{# FLASHBAG #}
+		{% for flashMessage in app.session.flashbag.get('notice') %}
+		<div class="flash notice">
+			<div class="tools-message">
+				{{flashMessage}}
+			</div>
+		</div>
+		{% endfor %}
+		{% for flashMessage in app.session.flashbag.get('error') %}
+		<div class="flash notice">
+			<div class="tools-message tools-message-red">
+				{{flashMessage}}
+			</div>
+		</div>
+		{% endfor %}
+		{% for flashMessage in app.session.flashbag.get('success') %}
+		<div class="flash notice">
+			<div class="tools-message tools-message-green">
+				{{flashMessage}}
+			</div>
+		</div>
+		{% endfor %}
+
+<!-- FOOTER -->
+{% if block('footer') %}
+<footer id="footer" class="group">
+	{% block footer %}
+	{% endblock %}
+</footer>
+{% endif %}
+
+<!-- SCRIPTS -->
+
+
+{% javascripts
+	'../app/Resources/public/js/jquery.js'
+%}
+	<script>window.jQuery || document.write('<script src="{{ asset_url }}"><\/script>')</script>
+{% endjavascripts %}
+
+
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+<script>window.jQuery || document.write('<script src="public/js/jquery.js"><\/script>')</script>
+{% block javascripts %}
+	{% javascripts
+		'../app/Resources/public/js/kube.min.js'
+		'../app/Resources/public/js/jquery.datetimepicker.js'
+		'../app/Resources/public/js/main.js'
+	%}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock  %}
+
+</body>
+</html>

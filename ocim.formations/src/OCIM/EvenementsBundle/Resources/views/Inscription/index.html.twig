@@ -1,0 +1,638 @@
+{% extends '::app.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+	{% stylesheets
+		'%kernel.root_dir%/Resources/public/css/popup.css'
+		'@OCIMEvenementsBundle/Resources/public/css/inscriptions.css'
+	filter='cssrewrite' %}
+		<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+	{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+	'%kernel.root_dir%/Resources/public/js/jquery-ui.min.js'
+	'%kernel.root_dir%/Resources/public/js/jquery.stickytableheaders.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/inscription.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/showDetailsInscriptions.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/reponseschampPerso.js'
+	'%kernel.root_dir%/Resources/public/js/popup.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/maj-statuts.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/proposition-export.js' %}
+    	<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{{path('evenement')}}">Evenements</a></li>
+<li><span>Inscriptions</span></li>
+{% endblock %}
+
+
+{% block title %}Inscriptions : {{ evenement.intitule }}{% endblock %}
+{% block titre %}{{ evenement.intitule }}{% endblock %}
+{% block controls %}
+<div>
+<div>
+<a href="{{ path('inscription_new', { 'idevenement': evenement.id }) }}" class="btn btn-green"><i class="fa fa-plus fa-fw"></i> Nouvelle inscription</a>
+<a class="btn btn-green list" href="#"></a>
+</div>
+<ul class="hide">
+<li><a href="{{path('intervenants_new', { 'idevenement': evenement.id }) }}"><i class="fa fa-plus fa-fw"></i>Créer un intervenant</a></li>
+<li><a href="{{path('evenement_addintervenants', {'idevenement': evenement.id })}}"><i class="fa fa-user fa-fw"></i>Relier un intervenant existant</a></li>
+<li><a href="{{path('champPerso_edit', {'idevenement': evenement.id })}}"><i class="fa fa-table fa-fw"></i>Editer les champs personnalisés</a></li>
+</ul>
+</div>
+{% endblock %}
+
+
+{% block body -%}
+<div id="message-error" class="tools-message tools-message-red disabledonload">ATTENTION : Erreur lors de l'enregistrement ! Veuillez recharger la page.</div>
+<div id="message-save" class="tools-message tools-message-green disabledonload">Enregistrement OK</div>
+<div id="lienAjax" class="hide">{{ path('inscription_edit_ordre', {'idevenement': evenement.id}) }}</div>
+<div id="updateconvention" class="hide">{{ path('inscription_update_statut_convention', {'idevenement': evenement.id}) }}</div>
+<div id="updateinscription" class="hide">{{ path('inscription_update_statut_inscription', {'idevenement': evenement.id}) }}</div>
+<div id="updatefinancement" class="hide">{{ path('inscription_update_statut_financement', {'idevenement': evenement.id}) }}</div>
+<div id="liensExport" class="hide">{{ path('documents_liens') }}</div>
+
+{% if entities != null %}
+{# indicateurs #}
+<ul id="comptes" class="blocks-5 padding">
+		<li class="statuts">
+		<p>Inscriptions</p>
+			<div class="units-row units-split end">
+				<div class="unit-33 valide"><p></p><p style="display:none" class="aide">Validés</p></div>
+				<div class="unit-33 attente"><p></p><p style="display:none" class="aide">En attente</p></div>
+				<div class="unit-33 annule"><p></p><p style="display:none" class="aide">Annulés</p></div>
+			</div>
+		</li>
+		<li class="financement">
+			<p>Financement</p>
+			<div class="units-row units-split end">
+				<div class="unit-33 valide"><p></p><p style="display:none" class="aide">Acceptés</p></div>
+				<div class="unit-33 attente"><p></p><p style="display:none" class="aide">En attente</p></div>
+				<div class="unit-33 annule"><p></p><p style="display:none" class="aide">Pas de financement</p></div>
+			</div>
+			<p class="info">Totaux sur les inscriptions <span style="color:rgba(3, 207, 3,  0.8)">validées</span></p>
+		</li>
+		<li class="formule">
+			<p>Formules</p>
+			<div class="units-row units-split end">
+				{% for formule in evenement.formules %}
+					<div class="unit-{{ (100/evenement.formules.count)|round(0, 'floor') }}">
+						<p data-idformule="{{formule.id}}">{{ (formule.nuit)? "<i class='fa fa-moon-o'></i>" }}{{formule.tarif}}{{ (formule.tarif|number_format)? "€" }}</p>
+					</div>
+				{% endfor %}
+			</div>
+			<p class="info">Totaux sur les inscriptions <span style="color:rgba(3, 207, 3,  0.8)">validées</span></p>
+		</li>
+		<li  class="conventions">
+			<p>Conventions</p>
+			<div class="units-row units-split end">
+				<div class="unit-33 valide"><p></p><p style="display:none" class="aide">Demandées</p></div>
+				<div class="unit-33 attente"><p></p><p style="display:none" class="aide">Ne sais pas</p></div>
+				<div class="unit-33 annule"><p></p><p style="display:none" class="aide">Pas de convention</p></div>
+			</div>
+			<p class="info">Totaux sur les inscriptions <span style="color:rgba(3, 207, 3,  0.8)">validées</span></p>
+		</li>
+		<li class="totaux">
+			<p>Divers</p>
+			<div class="units-row units-split end">
+				<div class="unit-33 users"><p><i class="fa fa-user fa-fw"></i><span></span></p><p style="display:none" class="aide">Stagiaires</p></div>
+				<div class="unit-33 pcst"><p><i class="fa fa-flask fa-fw"></i><span></span></p><p style="display:none" class="aide">PCST</p></div>
+				<div class="unit-33 intervs"><p><i class="fa fa-briefcase fa-fw"></i><span></span></p><p style="display:none" class="aide">Intervenants</p></div>
+			</div>
+		</li>
+</ul>
+
+<div class="panel">
+	<nav class="nav-tabs" data-tools="tabs" data-equals="true" style="padding-left: 25px;">
+		<ul>
+			<li class="active"><a href="#general">informations Générales</a></li>
+			<li><a href="#contact">Contacts</a></li>
+			<li><a href="#champPerso">Logistique</a></li>
+			<li><a href="#convention">Convention</a></li>
+			<li><a href="#financement">Financement</a></li>
+			<li><a href="#attentes">Attentes</a></li>
+			<li><a href="#intervenants">Intervenants</a></li>
+		</ul>
+	</nav>
+<div class="panel-body units-row units-split">
+
+{# GENERAL #}
+<div id="general" class="tab unit-100">
+<div class="table-container">
+	<table class="">
+		<thead>
+			<tr>
+				<th class="handle"></th>
+				<th class="insc info"><span>Provenance</span></th>
+				<th class="insc info"><span>Civilité</span></th>
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				<th class="insc info"><span>Structure</span></th>
+				<th class="insc info"><span>Fonction</span></th>
+				<th class="insc info"><span>Adresse</span></th>
+				<th class="insc info"><span>CP</span></th>
+				<th class="insc info"><span>Ville</span></th>
+				<th class="insc info"><span>Téléphone</span></th>
+				<th class="insc info"><span>Mail Stagiaire</span></th>
+				<th class="insc info"><span>Mail Admin</span></th>
+				<th class="insc info"><span>Formule</span></th>
+				<th class="insc info text-centered"><span>Convention</span></th>
+				<th class="insc info"><span>Inscription</span></th>
+				<th class="insc info"><span>Tags</span></th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+			<tr class="statut {{class}}{{((id is defined)and( id == entity.id ))? " highlight"}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}">
+						{% if class == "attente" %}<td class="handle"><i class="fa fa-arrows"></i></td>{% else %}<td></td>{% endif %}
+						<td class="insc info"><span>{{ (entity.provenancePCST)? "<i class='fa fa-flask'>PCST</i>" }}</span></td>
+						<td class="insc info civilite-stagiaire"><span>{{ entity.stagiaire.civilite }}</span></td>
+						<td class="insc info nom-stagiaire"><span>{{ entity.stagiaire.nom }}</span></td>
+						<td class="insc info prenom-stagiaire"><span>{{ entity.stagiaire.prenom }}</span></td>
+						<td class="insc">{% if entity.stagiaire.adresse %}<span>{{ entity.stagiaire.adresse.nomStructure }}</span>{% endif %}</td>
+						<td class=""><span>{{ entity.stagiaire.fonction }}</span></td>
+						<td> {{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.adresse }}</td>
+						<td> {{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.cP }}</td>
+						<td> {{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.ville }}</td>
+						<td> {{ entity.stagiaire.tel }}</td>
+						<td> <a href="mailto:{{ entity.stagiaire.mail }}">{{ entity.stagiaire.mail }}</a></td>
+						<td> <a href="mailto:{{ (entity.admin)? entity.admin.mail }}">{{ (entity.admin)? entity.admin.mail }}</a></td>
+						<td class="inscformule" data-idformule="{{ entity.evenementFormule.formule.id }}"><span><abbr title="{{ entity.evenementFormule.formule }}">{{ entity.evenementFormule.formule.tarif }} {{ (entity.evenementFormule.formule.nuit)? "<i class='fa fa-moon-o'></i>" }}</abbr></span></td>
+						<td class="text-centered tdfinancement">
+							{% if entity.statutConvention is null %}
+							<span class="label label-yellow" title="Ne sais pas"><i class="fa fa-question"></i></span>
+							{% elseif entity.statutConvention == false %}
+							<span class="label label-red" title="Non"><i class="fa fa-times"></i></span>
+							{% else %}
+							<span class="label label-green" title="Demande de convention confirmée"><i class="fa fa-check"></i></span>
+							{% endif %}
+						</td>
+						<td class='dateinscription'><span>{% if entity.dateInscription %}{{ entity.dateInscription|date('d/m/Y') }}{% endif %}</span></td>
+						<td>
+							<span>
+									{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.tags|join(', ')}}
+							</span>
+						</td>
+            <td class="insc actions">
+							<a href="#" data-tools="dropdown" data-target="#dropdown1-{{loop.index}}"></a>
+							{% spaceless %}
+							<ul id="dropdown1-{{loop.index}}" class="dropdown">
+								<li><a href="{{ path('inscription_show', { 'id': entity.id, 'idevenement':evenement.id }) }}" class="inscription-href"><i class="fa fa-info fa-fw"></i>Détails</a></li>
+								<li><a href="{{ path('inscription_edit', { 'id': entity.id, 'idevenement':evenement.id }) }}" class="inscription-href"><i class="fa fa-pencil fa-fw"></i>Modifier</a></li>
+								<li>
+									<a href="#" class="export" data-idinscription="{{ entity.id }}"><i class="fa fa-download fa-fw"></i>Exporter</a></li>
+								</li>
+								<li>
+									<a href="#" class="majstatuts"
+										data-statut='{{ entity.numberStatut }}'
+										data-statutconvention="{% if (entity.statutConvention == false)and(entity.statutConvention is not null) %}0{% elseif entity.statutConvention == true %}1{% elseif entity.statutConvention is null %}{% endif %}" data-idinscription="{{ entity.id }}"
+										data-statutfinancement="{% if entity.statutFinancement is null %}null{% elseif entity.statutFinancement == false %}0{% else %}1{% endif %}">
+										<i class="fa fa-refresh fa-fw"></i>Statuts
+									</a>
+								</li>
+							</ul>
+							{% endspaceless %}
+						</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+	</table>
+</div>
+</div>
+
+{# CONTACT #}
+<div id="contact" class="tab unit-100">
+<div class="table-container">
+	<table class="">
+		<thead>
+			<tr>
+				<th class="handle"></th>
+				<th class="insc info"><span>Civilité</span></th>
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				<th class="insc contact"><span>Structure</span></th>
+				<th class="insc contact"><span>Fonction</span></th>
+				<th class="insc contact"><span>Adresse</span></th>
+				<th class="insc contact"><span>CP</span></th>
+				<th class="insc contact"><span>Ville</span></th>
+				<th class="insc contact"><span>Téléphone</span></th>
+				<th class="insc contact"><span>Mail Stagiaire</span></th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+			<tr class="statut {{class}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}">
+
+						{% if class == "attente" %}<td class="handle"><i class="fa fa-arrows"></i></td>{% else %}<td></td>{% endif %}
+						<td class="insc info"><span>{{ entity.stagiaire.civilite }}</span></td>
+						<td class="insc info nom-stagiaire"><span>{{ entity.stagiaire.nom }}</span></td>
+						<td class="insc info prenom-stagiaire"><span>{{ entity.stagiaire.prenom }}</span></td>
+						<td class="insc contact"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.nomStructure }}</span></td>
+						<td class="insc contact"><span>{{ entity.stagiaire.fonction }}</span></td>
+						<td class="insc contact"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.adresse }}</span></td>
+						<td class="insc contact"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.CP }}</span></td>
+						<td class="insc contact"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.ville }}</span></td>
+						<td class="insc contact">{{ entity.stagiaire.tel }}</td>
+						<td class="insc contact"><a href="mailto:{{ entity.stagiaire.mail}}">{{ entity.stagiaire.mail}}</a></td>
+      </tr>
+        {% endfor %}
+    </tbody>
+	</table>
+</div>
+</div>
+
+{# ChampPerso #}
+	<div class="hide" id="majChampPerso">{{path('champPerso_reponse')}}</div>
+<div id="champPerso" class="tab unit-100">
+{% if champPerso|length > 0 %}
+<div class="table-container">
+	<table class="table-bordered">
+		<thead>
+			<tr style="background-color: white; ">
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				{% for log in champPerso %}
+					<th class="{{("Nuit" in log.description)or("nuit" in log.description)? "nuit"}}">{{(log.date is not null)? log.date|date('d/m')}} {{log.description}}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+
+			{% if entity.statut == 'accepté' %}
+			<tr class="statut {{class}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}" data-idpersonne="{{entity.stagiaire.id}}">
+						<td class="insc info"><span>{{ entity.stagiaire.nom }}</span></td>
+						<td class="insc info"><span>{{ entity.stagiaire.prenom }}</span></td>
+
+					{% for log in champPerso %}
+						{% if log.evenementformule|length > 0 %}
+							{% if entity.evenementFormule in log.evenementFormule %}
+								<td class="champPerso {{("Nuit" in log.description)or("nuit" in log.description)? "nuit"}}" data-type="{{log.typeReponse}}" data-idreponse="{{ (attribute(entity.stagiaire, 'getReponseByModeleId', [log.id]))? attribute(entity.stagiaire, 'getReponseByModeleId', [log.id]).id }}" data-date="{{log.date|date('')}}" data-idmodele="{{log.id}}" data-reponse="{{attribute(entity.stagiaire, 'getReponseByModeleId', [log.id, log.typeReponse]) }}">
+									{% if attribute(entity.stagiaire, 'getReponseByModeleId', [log.id]) %}
+										{% if log.typeReponse == 'bool' %}
+											{% if (attribute(entity.stagiaire, 'getReponseByModeleId', [log.id, log.typeReponse]) == '1') %}
+												<span class="champPerso ok">1</span>
+											{% elseif (attribute(entity.stagiaire, 'getReponseByModeleId', [log.id, log.typeReponse]) == '0') %}
+												<span class="champPerso zero">0</span>
+											{% endif %}
+										{% elseif log.typeReponse == 'text' %}
+											{{ (attribute(entity.stagiaire, 'getReponseByModeleId', [log.id, log.typeReponse]))}}
+										{% endif %}
+									{% endif %}
+								</td>
+							{% else %}
+								<td data-reponse="0" class="undefined"></td>
+							{% endif %}
+						{% else %}
+							{# modele uniquement intervenant #}
+							<td data-reponse="0" class="undefined"></td>
+						{% endif %}
+					{% endfor %}
+            </tr>
+			{% endif %}
+        {% endfor %}
+
+		{# ChampPerso des intervenants #}
+		{% for intervenant in evenement.intervenants %}
+			<tr data-idpersonne="{{intervenant.id}}">
+				<td class="insc info">{{intervenant.nom}}</td>
+				<td class="insc info">{{intervenant.prenom}}</td>
+				{% for log in champPerso %}
+					{% if log.evenement %}
+						<td class="champPerso {{("Nuit" in log.description)or("nuit" in log.description)? "nuit"}}" data-type="{{log.typeReponse}}" data-idreponse="{{ (attribute(intervenant, 'getReponseByModeleId', [log.id]))? attribute(intervenant, 'getReponseByModeleId', [log.id]).id }}" data-date="{{log.date|date('')}}" data-idmodele="{{log.id}}" data-reponse="{{attribute(intervenant, 'getReponseByModeleId', [log.id, log.typeReponse]) }}">
+							{% if attribute(intervenant, 'getReponseByModeleId', [log.id]) %}
+								{% if log.typeReponse == 'bool' %}
+									{% if (attribute(intervenant, 'getReponseByModeleId', [log.id, log.typeReponse]) == '1') %}
+										<span class="champPerso ok">1</span>
+									{% elseif (attribute(intervenant, 'getReponseByModeleId', [log.id, log.typeReponse]) == '0') %}
+										<span class="champPerso zero">0</span>
+									{% endif %}
+								{% elseif log.typeReponse == 'text' %}
+									{{ (attribute(intervenant, 'getReponseByModeleId', [log.id, log.typeReponse]))}}
+								{% endif %}
+							{% endif %}
+						</td>
+					{% else %}
+						<td data-reponse="0" class="undefined"></td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
+
+        </tbody>
+		<tfoot>
+			<td colspan="2">Totaux</td>
+			{% for log in champPerso %}
+					{% if log.typeReponse == 'bool' %}
+						<td class="{{("Nuit" in log.description)or("nuit" in log.description)? "nuit"}}" data-typereponse="{{log.typeReponse}}"></td>
+					{% else %}
+						<td style="background-color: rgba(125,125,125, 0.2)"></td>
+					{% endif %}
+			{% endfor %}
+		</tfoot>
+	</table>
+</div>
+{% else %}
+	<p class="lead text-centered">
+		La champPerso pour cette evenement n&apos;a pas été configurée.
+	</p>
+	<p class="text-centered">
+		<a class="btn btn-big" href="{{ path('champPerso_edit', {'idevenement': evenement.id, 'generation': 'generate'}) }}"><i class="fa fa-table fa-fw"></i> Générer maintenant</a>
+	</p>
+{% endif %}
+
+</div>
+
+{# CONVENTION #}
+<div id="convention" class="tab unit-100">
+<div class="table-container">
+	<table class="">
+		<thead>
+			<tr>
+				<th class="handle"></th>
+				<th class="insc info"><span>Civilité</span></th>
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				<th class="insc convention text-centered"><span>Numéro</span></th>
+				<th class="insc convention text-centered"><span>Edition</span></th>
+				<th class="insc convention text-centered"><span>Etape-1</span></th>
+				<th class="insc convention text-centered"><span>Etape-2</span></th>
+				<th class="insc convention text-centered"><span>Etape-3</span></th>
+				<th class="insc convention text-centered"><span>Etape-4</span></th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+			<tr class="statut {{class}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}">
+						{% if class == "attente" %}<td class="handle"><i class="fa fa-arrows"></i></td>{% else %}<td></td>{% endif %}
+						<td class="insc info"><span>{{ entity.stagiaire.civilite }}</span></td>
+						<td class="insc info nom-stagiaire"><span>{{ entity.stagiaire.nom }}</span></td>
+						<td class="insc info prenom-stagiaire"><span>{{ entity.stagiaire.prenom }}</span></td>
+					{% if entity.convention %}
+						<td class="insc convention text-centered"><span>{{ entity.convention.numeroToString }}</span></td>
+						<td class="insc convention text-centered"><span>{{ entity.convention.edition|date('d/m/Y') }}</span></td>
+						<td class="insc convention text-centered"><span>{% if entity.convention.etape1 %}<i class="fa fa-check" title="{{ entity.convention.etape1|date('d/m/Y') }}"></i></span>{% endif %}</td>
+						<td class="insc convention text-centered"><span>{% if entity.convention.etape2 %}<i class="fa fa-check" title="{{ entity.convention.etape2|date('d/m/Y') }}"></i></span>{% endif %}</td>
+						<td class="insc convention text-centered"><span>{% if entity.convention.etape3 %}<i class="fa fa-check" title="{{ entity.convention.etape3|date('d/m/Y') }}"></i></span>{% endif %}</td>
+						<td class="insc convention text-centered"><span>{% if entity.convention.etape4 %}<i class="fa fa-check" title="{{ entity.convention.etape4|date('d/m/Y') }}"></i></span>{% endif %}</td>
+
+					{% else %}
+						<td class="insc convention text-centered" colspan="6">
+							<span style="color: grey">{% if(entity.statutConvention is null) %} Demande de convention non confirmée {% elseif entity.statutConvention == false %} Pas de convention {% elseif entity.statutConvention == true %} <strong>Convention demandée</strong>{% endif %}</span>
+						</td>
+					{% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+	</table>
+</div>
+</div>
+
+{# financement #}
+<div id="financement" class="tab unit-100">
+<div class="table-container">
+	<table class="">
+		<thead>
+			<tr>
+				<th class="handle"></th>
+				<th class="insc finance text-centered">Statut</th>
+				<th class="insc info"><span>Civilité</span></th>
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				<th class="insc finance"><span>Structure stagiaire</span></th>
+				<th class="insc finance">Organisme Financeur</th>
+				<th class="insc finance">Adresse</th>
+				<th class="insc finance">CP</th>
+				<th class="insc finance">Ville</th>
+				<th class="insc finance">Type</th>
+				<th class="insc finance">Tags</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+			<tr class="statut {{class}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}">
+						{% if class == "attente" %}<td class="handle"><i class="fa fa-arrows"></i></td>{% else %}<td></td>{% endif %}
+						<td class="insc info text-centered">
+							{% if entity.statutFinancement is null %}
+								<span class="label label-yellow" title="Financement en attente"><i class="fa fa-question"></i></span>
+							{% elseif entity.statutFinancement == false %}
+								<span class="label label-red" title="Financement pas accordé"><i class="fa fa-times"></i></span>
+							{% else %}
+								<span class="label label-green" title="Financement Accordé"><i class="fa fa-check"></i></span>
+							{% endif %}
+						</td>
+						<td class="insc info"><span>{{ entity.stagiaire.civilite }}</span></td>
+						<td class="insc info nom-stagiaire"><span>{{ entity.stagiaire.nom }}</span></td>
+						<td class="insc info prenom-stagiaire"><span>{{ entity.stagiaire.prenom }}</span></td>
+						<td class="insc finance"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.nomStructure }}</span></td>
+
+						{% if (entity.signataire is not null) and (entity.signataire.adresse is not null)%}
+							<td class="insc finance">{{ entity.signataire.adresse.nomStructure}}</td>
+							<td class="insc finance">{{ entity.signataire.adresse.adresse}}</td>
+							<td class="insc finance">{{ entity.signataire.adresse.cP}}</td>
+							<td class="insc finance">{{ entity.signataire.adresse.ville}}</td>
+							<td class="insc finance">{{ entity.signataire.adresse.type}}</td>
+							<td class="insc finance">{{ entity.signataire.adresse.tags|join(', ')}}</td>
+						{% else %}
+							<td colspan="6"></td>
+						{% endif %}
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+	</table>
+</div>
+</div>
+
+{# ATTENTES #}
+<div id="attentes" class="tab unit-100">
+<div class="table-container">
+	<table class="">
+		<thead>
+			<tr>
+				<th class="handle"></th>
+				<th class="insc info"><span>Nom</span></th>
+				<th class="insc info"><span>Prénom</span></th>
+				<th class="insc attentes"><span>Structure</span></th>
+				<th class="insc attentes"><span>Fonction</span></th>
+				<th class="insc attentes"><span>CP</span></th>
+				<th class="insc attentes"><span>Ville</span></th>
+				<th class="insc attentes"><span>Mail</span></th>
+				<th class="insc attentes attente-text" style="width:550px !important; white-space:normal !important">Attentes</th>
+				<th class="insc attentes"><span>Tags</span></th>
+				<th class="insc attentes"><span>Provenance</span></th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for entity in entities %}
+			{% set class = "" %}
+			{% if entity.statut == 'en attente' %}
+				{% set class = "attente" %}
+			{% elseif entity.statut == 'accepté' %}
+				{% set class = "valide" %}
+			{% elseif entity.statut == 'annulé' %}
+				{% set class = "annule" %}
+			{% endif %}
+			<tr class="statut {{class}}" data-ordre="{{entity.ordre}}" data-idinscription="{{entity.id}}">
+				{% if class == "attente" %}<td class="handle"><span class="fa fa-arrows"></span></td>{% else %}<td></td>{% endif %}
+				<td class="insc info nom-stagiaire"><span>{{ entity.stagiaire.nom }}</span></td>
+				<td class="insc info prenom-stagiaire"><span>{{ entity.stagiaire.prenom }}</span></td>
+				<td class="insc attentes"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.nomStructure }}</span></td>
+				<td class="insc attentes"><span>{{ entity.stagiaire.fonction }}</span></td>
+				<td class="insc attentes"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.cP }}</span></td>
+				<td class="insc attentes"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.ville }}</span></td>
+				<td class="insc attentes"><a href="mailto:{{ entity.stagiaire.mail }}">{{ entity.stagiaire.mail }}</a></td>
+				<td class="insc attentes attente-text" style="width:550px !important; white-space:normal !important">{{ entity.attentes }}</td>
+				<td class="insc attentes"><span>{{ (entity.stagiaire.adresse)? entity.stagiaire.adresse.tags|join(', ') }}</span></td>
+				<td class="insc attentes"><span>{{ (entity.provenancePCST)? "<i class='fa fa-flask'>PCST</i>" }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+	</table>
+</div>
+</div>
+
+{# intervenants #}
+<div id="intervenants" class="tab unit-100">
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Structure</th>
+					<th>Fonction</th>
+					<th>Adresse</th>
+					<th>CP</th>
+					<th>Ville</th>
+					<th>Téléphone</th>
+					<th>Email</th>
+					<th>Tags</th>
+					<th>Commentaire</th>
+					<th></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for intervenant in evenement.intervenants %}
+					<tr class="{{((id is defined)and( id == intervenant.id ))? " highlight"}}">
+						<td>{{ intervenant.nom }}</td>
+						<td>{{ intervenant.prenom }}</td>
+						<td>{{ (intervenant.adresse is not null)? intervenant.adresse.nomStructure }}</td>
+						<td>{{ intervenant.fonction }}</td>
+						<td>{{ (intervenant.adresse is not null)? intervenant.adresse.adresse }}</td>
+						<td>{{ (intervenant.adresse is not null)? intervenant.adresse.cP }}</td>
+						<td>{{ (intervenant.adresse is not null)? intervenant.adresse.ville }}</td>
+						<td>{{ intervenant.tel }}</td>
+						<td><a href="mailto:{{ intervenant.mail }}">{{ intervenant.mail }}</a></td>
+						<td>{{ (intervenant.adresse is not null)? intervenant.adresse.tags|join(', ') }}</td>
+						<td>{{ intervenant.commentaire }}</td>
+						<td>
+							<a href="{{path('intervenants_edit', {'id': intervenant.id, 'idevenement': evenement.id})}}"><i class="fa fa-pencil"></i></a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</div>
+
+{% else %}
+	<p class="text-centered lead"><i class="fa fa-info"></i> Aucune inscription pour le moment...</p>
+	<div class="units-row text-centered">
+		<a href="{{ path('inscription_new', { 'idevenement': evenement.id }) }}" class="btn btn-green btn-big"><i class="fa fa-plus"></i> Nouvelle inscription</a>
+		<a href="{{path('intervenants_new', { 'idevenement': evenement.id }) }}" class='btn btn-big'><span class="fa fa-plus"></span> Ajouter un intervenant</a>
+	</div>
+
+	{% if evenement.intervenants|length > 0 %}
+
+		<div class="table-container panel">
+			<table>
+				<thead>
+					<tr>
+						<th>Civilité</th>
+						<th>Nom</th>
+						<th>Prénom</th>
+						<th>Fonction</th>
+						<th>Téléphone</th>
+						<th>Email</th>
+						<th>Structure</th>
+						<th>Commentaire</th>
+						<th></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for intervenant in evenement.intervenants %}
+						<tr class="{{((id is defined)and( id == intervenant.id ))? " highlight"}}">
+							<td>{{intervenant.civilite}}</td>
+							<td>{{intervenant.nom|capitalize}}</td>
+							<td>{{intervenant.prenom|capitalize}}</td>
+							<td>{{intervenant.fonction}}</td>
+							<td>{{intervenant.tel}}</td>
+							<td><a href="mailto:{{intervenant.mail}}">{{intervenant.mail}}</a></td>
+							<td>{{intervenant.adresse.nomStructure}}</td>
+							<td>{{intervenant.commentaire}}</td>
+							<td>
+								<a href="{{path('intervenants_edit', {'id': intervenant.id, 'idevenement': evenement.id})}}"><i class="fa fa-pencil"></i></a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+
+{% endif %}
+
+
+
+
+{% endblock %}

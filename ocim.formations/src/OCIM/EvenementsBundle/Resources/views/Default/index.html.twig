@@ -1,0 +1,232 @@
+{% extends "::app.html.twig" %}
+
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets '@OCIMEvenementsBundle/Resources/public/css/accueil.css' filter='cssrewrite' %}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+	'@OCIMEvenementsBundle/Resources/public/js/Inscription/accueil.js' %}
+			<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+
+{# Titres #}
+{% block title %}Accueil{% endblock %}
+{% block titre %}Bonjour {{app.user.username|capitalize}} !{% endblock %}
+
+
+{# Controls #}
+{% block controls %}
+<a href="{{path('user_edit', {'id': app.user.id})}}" class="btn"><i class="fa fa-user fa-fw"></i>Mon compte</a>
+{% endblock %}
+
+
+
+{% block body  %}
+<div class="units-row units-mobile-33" id="indicateurs">
+	<div class="unit-20 group">
+		<i class="fa fa-graduation-cap fa-3x left"></i>
+		<div class="count-container left">
+			<p>
+				<span class="count">{{countFormations}}</span>
+				<span class="nomcount">Formations</span>
+				<a href="{{ path('evenement') }}"><br/><i class="fa fa-angle-double-right fa-fw"></i>Voir toutes les formations</a>
+			</p>
+
+		</div>
+	</div>
+
+	<div class="unit-20 group">
+		<i class="fa fa-calendar fa-3x left"></i>
+		<div class="count-container left">
+			<p>
+				<span class="count">{{countEvents}}</span>
+				<span class="nomcount">Evenements</span>
+				<a href="{{ path('evenement') }}"><br/><i class="fa fa-angle-double-right fa-fw"></i>Voir toutes les evenements</a>
+			</p>
+
+		</div>
+	</div>
+
+	<div class="unit-20 group">
+		<i class="fa fa-users fa-3x left"></i>
+		<div class="count-container left">
+			<p>
+				<span class="count">{{countInscriptions}}</span>
+				<span class="nomcount">Inscriptions</span>
+				<a href="{{path('personne')}}"><br/><i class="fa fa-angle-double-right fa-fw"></i>Aller aux contacts</a>
+			</p>
+		</div>
+	</div>
+
+	<div class="unit-20 group">
+		<i class="fa fa-briefcase fa-3x left"></i>
+		<div class="count-container left">
+			<p>
+				<span class="count">{{countIntervenant}}</span>
+				<span class="nomcount">Intervenants</span>
+				<a href="{{path('intervenants_new')}}"><br/><i class="fa fa-plus fa-fw"></i>Entrer un nouvel Intervenant</a>
+			</p>
+		</div>
+	</div>
+
+	<div class="unit-20 group">
+		<i class="fa fa-folder-open fa-3x left"></i>
+		<div class="count-container left">
+			<p>
+				<span class="count">{{countConvention}}</span>
+				<span class="nomcount">Conventions</span>
+				<a href="{{path('convention')}}"><br/><i class="fa fa-angle-double-right fa-fw"></i>Voir les conventions</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+
+<div class="units-row">
+	<div class="unit-60 panel" id="evenements">
+		<div class="header">
+
+			<nav class="nav-tabs" data-tools="tabs" data-equals="true">
+					<ul>
+							<li class="active"><a href="#formations">Formations à venir</a></li>
+							<li><a href="#events">&Eacute;vénements à venir</a></li>
+					</ul>
+			</nav>
+		</div>
+
+		<div class="panel-body">
+			<div id="formations">
+			<table class="table-hovered">
+				<tbody>
+					{% for evenement in formations %}
+					<tr>
+					<td title="{{ (evenement.intitule|length >= 55)? evenement.intitule }}">{{evenement.intitule|slice(0,55)}}{{ (evenement.intitule|length >= 55)? "..." }}</td>
+					<td>{{ evenement.lieu|capitalize}}</td>
+					<td>
+						<div class="group">
+							{% set spanclass = '' %}
+							{% set text = '' %}
+							{% for statut in evenement._count %}
+								{% if statut.statut == '2' %}
+									{% set spanclass = 'badge-yellow' %}
+									{% set text = 'Inscriptions en attente de validation' %}
+								{% endif %}
+								{% if statut.statut == '1' %}
+									{% set spanclass = 'badge-green' %}
+									{% set text = 'Inscriptions validées' %}
+								{% endif %}
+								{% if statut.statut == '3' %}
+									{% set spanclass = 'badge-red' %}
+									{% set text = "Nombre d'inscriptions annulées" %}
+								{% endif %}
+								<span title="{{ text }}" class="badge {{ spanclass }}">{{ statut.1 }}</span>
+							{% endfor %}
+						</div>
+					</td>
+					<td>
+						<span class="group evenement-raccourcis right">
+							<a title="Inscriptions" href="{{ path('inscription', { 'idevenement': evenement.id }) }}"><i class="fa fa-users fa-border"></i></a>
+							<a title="Détails" href="{{ path('evenement_show', { 'id': evenement.id }) }}"><i class="fa fa-info fa-border"></i></a>
+							<a title="ChampPerso" href="{{path('champPerso_edit', {'idevenement': evenement.id })}}"><i class="fa fa-table fa-border"></i></a>
+							<a title="Configuration" href="{{ path('evenement_edit', { 'id': evenement.id }) }}"><i class="fa fa-cogs fa-border"></i></a>
+						</span>
+					</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<p class="group">
+				<span class="controls right">
+					<a href="{{ path('evenement') }}"><i class="fa fa-angle-double-right"></i> Toutes les formations</a>
+				</span>
+			</p>
+		</div>
+		<div id="events">
+			<table class="table-hovered">
+				<tbody>
+					{% for evenement in evenements %}
+					<tr>
+					<td title="{{ (evenement.intitule|length >= 55)? evenement.intitule }}">{{evenement.intitule|slice(0,55)}}{{ (evenement.intitule|length >= 55)? "..." }}</td>
+					<td>{{ evenement.lieu|capitalize}}</td>
+					<td>
+						<div class="group">
+							{% set spanclass = '' %}
+							{% set text = '' %}
+							{% for statut in evenement._count %}
+								{% if statut.statut == '2' %}
+									{% set spanclass = 'badge-yellow' %}
+									{% set text = 'Inscriptions en attente de validation' %}
+								{% endif %}
+								{% if statut.statut == '1' %}
+									{% set spanclass = 'badge-green' %}
+									{% set text = 'Inscriptions validées' %}
+								{% endif %}
+								{% if statut.statut == '3' %}
+									{% set spanclass = 'badge-red' %}
+									{% set text = "Nombre d'inscriptions annulées" %}
+								{% endif %}
+								<span title="{{ text }}" class="badge {{ spanclass }}">{{ statut.1 }}</span>
+							{% endfor %}
+						</div>
+					</td>
+					<td>
+						<span class="group evenement-raccourcis right">
+							<a title="Inscriptions" href="{{ path('inscription', { 'idevenement': evenement.id }) }}"><i class="fa fa-users fa-border"></i></a>
+							<a title="Détails" href="{{ path('evenement_show', { 'id': evenement.id }) }}"><i class="fa fa-info fa-border"></i></a>
+							<a title="ChampPerso" href="{{path('champPerso_edit', {'idevenement': evenement.id })}}"><i class="fa fa-table fa-border"></i></a>
+							<a title="Configuration" href="{{ path('evenement_edit', { 'id': evenement.id }) }}"><i class="fa fa-cogs fa-border"></i></a>
+						</span>
+					</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<p class="group">
+				<span class="controls right">
+					<a href="{{ path('evenement') }}"><i class="fa fa-angle-double-right"></i> Tous les événements</a>
+				</span>
+			</p>
+		</div>
+
+		</div>
+	</div>
+
+
+
+
+	<div class="unit-40 panel" id="inscriptions">
+		<div class="header">
+			<span class="titre">10 derniers inscrits</span>
+				<span class="controls right group">
+
+				</span>
+		</div>
+
+		<div class="panel-body">
+			<table class="table-flat table-hovered">
+			{% for inscription in inscriptions %}
+				<tr data-href="{{ path('inscription', { 'idevenement': inscription.evenementformule.evenement.id, 'id': inscription.id }) }}">
+					<td>
+						{{inscription.stagiaire.nom}} {{inscription.stagiaire.prenom|capitalize}}
+						<span class="evenementchoisie hide">
+							<i class="fa fa-graduation-cap fa-fw"></i>{{ inscription.evenementformule.evenement.intitule }}
+						</span>
+					</td>
+					<td style="width: 125px">
+						<span class="right color-gray-30">{{inscription.dateInscription|date('d/m/Y H:i')}}</span>
+					</td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock  %}

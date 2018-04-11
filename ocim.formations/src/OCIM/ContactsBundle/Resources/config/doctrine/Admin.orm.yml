@@ -1,0 +1,4 @@
+OCIM\ContactsBundle\Entity\Admin:
+    type: entity
+    table: null
+    lifecycleCallbacks: {}

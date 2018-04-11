@@ -1,0 +1,149 @@
+{% extends '::app.html.twig' %}
+{% form_theme form '::form.html.twig' %}
+
+
+{% block stylesheets %}
+  {{parent()}}
+  {% stylesheets
+    '%kernel.root_dir%/Resources/public/css/dataTables.min.css'
+    '@OCIMEvenementsBundle/Resources/public/css/intervenants.css'
+      filter='cssrewrite' %}
+  <link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+  {% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+  '%kernel.root_dir%/Resources/public/js/dataTables.min.js'
+  '@OCIMEvenementsBundle/Resources/public/js/Intervenant/intervenants.js'
+
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script>
+$(document).ready(function() {
+
+  //init de datatables.js
+  var datatable = $('#datatable').dataTable({
+    // "ajax": "data/arrays.txt"
+    language: {
+      "sProcessing":     "Traitement en cours...",
+      "sSearch":         "Rechercher&nbsp;:",
+      "sLengthMenu": 'Afficher <select>'+
+          '<option value="10">10</option>'+
+          '<option value="50">50</option>'+
+          '<option value="100">100</option>'+
+          '<option value="200">200</option>'+
+          '<option value="-1">Tous</option>'+
+          '</select> &eacute;l&eacute;ments',
+      //"sLengthMenu":     "Afficher _MENU_ &eacute;l&eacute;ments",
+      "sInfo":           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+      "sInfoEmpty":      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+      "sInfoFiltered":   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+      "sInfoPostFix":    "",
+      "sLoadingRecords": "Chargement en cours...",
+      "sZeroRecords":    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+      "sEmptyTable":     "Aucune donn&eacute;e disponible dans le tableau",
+      "oPaginate": {
+        "sFirst":      "Premier",
+        "sPrevious":   "Pr&eacute;c&eacute;dent",
+        "sNext":       "Suivant",
+        "sLast":       "Dernier"
+      },
+      "oAria": {
+        "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+        "sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+      }
+    },
+    "columnDefs": [ { "targets": 0, "orderable": false } ],
+    "order": [[ 0, "desc" ]],
+    'sDom': '<l><"group"><"table-container"t>ipr',
+  });
+
+  $('#search-box').keyup(function(e){
+    datatable.fnFilter( $(this).val() );
+  });
+
+});
+
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{{path('evenement')}}">Evenements</a></li>
+<li><span>Inscriptions</span></li>
+{% endblock %}
+
+{% block title %}Relier des intervenants{% endblock %}
+{% block titre %}Relier des intervenants{% endblock %}
+{% block controls %}
+{% endblock %}
+
+{% block body -%}
+{{ form_start(form) }}
+  <div class="panel" style="margin-bottom: 1.8em">
+    <div class="header">
+      <span class="titre"></span>
+        <span class="controls right group">
+          <input type='search' id="search-box" placeholder="Recherche"/>
+        </span>
+    </div>
+  <div class="panel-body">
+  <table class="table-bordered" id="datatable">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Prénom</th>
+      <th>Nom</th>
+      <th>Fonction</th>
+      <th>Ville</th>
+      <th>Evenement(s)</th>
+      <th>Tags</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for intervenant in form.intervenants %}
+        <tr class="{{ (intervenant.vars.checked)? 'checked' }}">
+          <td>
+            {{ form_widget(intervenant, {'label': ''}) }}
+            {{ intervenants[loop.index0].id }}
+          </td>
+          <td>
+            {{ intervenants[loop.index0].prenom }}
+          </td>
+          <td>
+            {{ intervenants[loop.index0].nom }}
+          </td>
+          <td>
+            {{ intervenants[loop.index0].fonction }}
+          </td>
+          <td>
+            {{ (intervenants[loop.index0].adresse)? intervenants[loop.index0].adresse.ville }}
+          </td>
+          <td>
+            {% for evenement in intervenants[loop.index0].evenements %}
+              {{evenement.intitule}}<br/>
+            {% endfor %}
+          </td>
+          <td>
+            {{ (intervenants[loop.index0].adresse)? intervenants[loop.index0].adresse.tags|join(', ') }}
+          </td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+</div>
+
+<footer id="footer" class="group">
+  <div class="right">
+{{ form_widget(form.submit) }}
+  </div>
+</footer>
+
+{{ form_end(form) }}
+
+
+{% endblock %}

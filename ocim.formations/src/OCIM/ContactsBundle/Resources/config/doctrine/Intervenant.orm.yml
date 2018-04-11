@@ -1,0 +1,8 @@
+OCIM\ContactsBundle\Entity\Intervenant:
+    type: entity
+    manyToMany:
+      evenements:
+        targetEntity: OCIM\EvenementsBundle\Entity\Evenement
+        mappedBy: intervenants
+    table: null
+    lifecycleCallbacks: {}

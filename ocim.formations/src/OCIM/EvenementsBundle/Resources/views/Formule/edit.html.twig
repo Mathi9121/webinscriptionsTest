@@ -1,0 +1,46 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block title %}Formule - modification formule {{entity.id}}{% endblock %}
+{% block titre %}Modification formule n°{{entity.id}}{% endblock %}
+
+{% block breadcrumbs %}
+<li><span>Edition</span></li>
+{% endblock %}
+
+{% block controls %}
+{{form(delete_form)}}
+{% endblock %}
+
+{% block body -%}
+
+{{form_start(edit_form)}}
+<div class="units-row units-padding ">
+  <div class="unit-centered unit-66 panel">
+    {{ form_row(edit_form.description) }}
+    <div class="units-row units-padding">
+      <div class="unit-50">
+        {{ form_row(edit_form.tarif) }}
+        <div class="forms-desc">Pour les prix en euros, ne pas ajouter le symbole '€'</div>
+      </div>
+      <div class="unit-50">
+        <label for="list-logi">La formule inclut :</label>
+        <ul class="forms-inline-list" id="list-logi">
+          <li>{{ form_widget(edit_form.midi) }}</li>
+          <li>{{ form_widget(edit_form.soir) }}</li>
+          <li>{{ form_widget(edit_form.nuit) }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer id="footer" class="group">
+	<div class="left">
+		<a href="{{ path('formule') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour à la liste</a>
+	</div>
+	<div class="right">{{form_widget(edit_form.submit)}}{{form_end(edit_form)}}</div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,37 @@
+champPerso:
+    path:     /
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:index" }
+
+champPerso_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:show" }
+
+champPerso_new:
+    path:     /new
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:new" }
+
+champPerso_create:
+    path:     /create
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:create" }
+    requirements: { _method: post }
+
+champPerso_edit:
+    path:     /evenement-{idevenement}/{generation}
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:edit", generation : edit}
+    requirements: 
+        generation: generate|edit
+
+champPerso_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:update" }
+    requirements: { _method: post|put }
+
+champPerso_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:delete" }
+    requirements: { _method: post|delete }
+
+champPerso_reponse:
+    path:     /update/reponse
+    defaults: { _controller: "OCIMEvenementsBundle:ChampPerso:reponse" }
+    requirements: { _method: post }

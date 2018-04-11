@@ -1,0 +1,75 @@
+OCIM\EvenementsBundle\Entity\Inscription:
+    type: entity
+    table: null
+    oneToOne:
+        convention:
+            targetEntity: Convention
+            inversedBy: inscription
+            cascade: ["all"]
+            joinColumn:
+                convention_id:
+                    referencedColumnName: id
+    manyToOne:
+        evenementformule:
+            targetEntity: evenementFormule
+            fetch: EAGER
+            inversedBy: inscriptions
+            joinColumn:
+                onDelete: CASCADE
+                evenementformule_id:
+                    referencedColumnName: id
+    manyToMany:
+        personnes:
+            targetEntity: OCIM\ContactsBundle\Entity\Personne
+            fetch: EAGER
+            cascade: ["all"]
+            inversedBy: inscription
+            joinTable:
+                name: inscription_personnes
+                cascade: ["persist", "remove"]
+                joinColumns:
+                    inscription_id:
+                        referencedColumnName: id
+                        onDelete: CASCADE
+                inverseJoinColumns:
+                    personne_id:
+                        referencedColumnName: id
+                        onDelete: CASCADE
+    repositoryClass: OCIM\EvenementsBundle\Entity\InscriptionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        dateInscription:
+            type: datetime
+        statut:
+            type: string
+            length: 255
+        attentes:
+            type: text
+            nullable: true
+        statutOrgFinanceur:
+            type: string
+            length: 255
+            nullable: true
+        statutConvention:
+            type: boolean
+            nullable: true
+        statutFinancement:
+            type: boolean
+            nullable: true
+        hash:
+            type: string
+            length: 255
+            nullable: true
+        ordre:
+            type: integer
+            nullable: true
+        provenancePCST:
+            type: boolean
+            nullable: true
+    lifecycleCallbacks:
+        prePersist: [ onPrePersist ]

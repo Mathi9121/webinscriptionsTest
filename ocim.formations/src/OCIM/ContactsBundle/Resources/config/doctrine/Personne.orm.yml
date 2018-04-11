@@ -1,0 +1,71 @@
+OCIM\ContactsBundle\Entity\Personne:
+    type: entity
+    inheritanceType: SINGLE_TABLE
+    discriminatorColumn:
+        name: discr
+        type: string
+    discriminatorMap:
+        signataire: Signataire
+        stagiaire: Stagiaire
+        intervenant: Intervenant
+        admin: Admin
+        personne: Personne
+    oneToOne:
+        adresse:
+            targetEntity: Adresse
+            cascade: ["persist", 'remove']
+            joinColumn:
+                name: adresse_id
+                referencedColumnName: id
+    oneToMany:
+        reponsesChampPerso:
+            targetEntity: OCIM\EvenementsBundle\Entity\ReponsesChampPerso
+            mappedBy: personne
+            cascade: ['all']
+            onDelete: "CASCADE"
+    manyToMany:
+      inscription:
+        targetEntity: OCIM\EvenementsBundle\Entity\Inscription
+        fetch: EAGER
+        mappedBy: personnes
+    table: null
+    repositoryClass: OCIM\ContactsBundle\Entity\PersonneRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        civilite:
+            type: string
+            length: 255
+            nullable: true
+        nom:
+            type: string
+            length: 255
+            nullable: true
+        prenom:
+            type: string
+            length: 255
+            nullable: true
+        fonction:
+            type: string
+            length: 255
+            nullable: true
+        tel:
+            type: string
+            length: 255
+            nullable: true
+        fax:
+            type: string
+            length: 255
+            nullable: true
+        mail:
+            type: string
+            length: 255
+            nullable: true
+        commentaire:
+            type: text
+            nullable: true
+    lifecycleCallbacks: {  }

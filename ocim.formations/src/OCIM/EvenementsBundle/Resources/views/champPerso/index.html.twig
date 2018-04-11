@@ -1,0 +1,77 @@
+{% extends '::app.html.twig' %}
+
+
+{% block title %}ChampPerso des evenements{% endblock %}
+{% block titre %}ChampPerso des evenements{% endblock %}
+
+{% block body -%}
+<div class="panel">
+	<div class="header">
+		<span class="titre">Liste des questions concernant la champPerso</span>
+		<span class="controls right group">
+
+		</span>
+	</div>
+	<div class="panel-body">
+
+	{% for entity in entities %}
+		<div class="accordion" data-tools="accordion">
+			<a href="#accordion-{{entity.id}}" class="accordion-title"><span class="oi" data-glyph="book"></span> {{ entity.intitule }}<span class="right">{% if entity.modeles|length > 0 %}<span class="label label-green"><i class="fa fa-table"></i> ChampPerso OK</span>{% else %}<span class="label label-red"><i class="fa fa-table"></i> Non défini{% endif %}</span></a>
+			<div id="accordion-{{entity.id}}" class="accordion-panel">
+
+
+				{% if entity.modeles|length > 0 %}
+					<div class="table-container">
+					<table class="table-bordered">
+						<tr>
+							<th><a href="{{path('champPerso_edit', {'idevenement':entity.id})}}" class="btn"><i class="fa fa-pencil"></i> Edition</a></th>
+							{% for modele in entity.modeles %}
+								<th>{{modele.date|date('d/m/Y')}} {{modele.description}}</th>
+							{% endfor %}
+						</tr>
+
+						{% for ff in entity.evenementFormule %}
+							<tr>
+							<th><abbr title="{{ff.formule.tarif}}{% if ff.formule.tarif|number_format %}€{% endif %} - {{ff.formule.description|capitalize}}">Formule {{ff.formule.id}}</abbr></th>
+							{% for modele in entity.modeles %}
+								{% if ff in modele.evenementformule %}<td class="text-centered" style="background-color: #f6f6f6"><i class="fa fa-check"></i></td>{% else %}<td></td>{% endif %}
+							{% endfor %}
+							</tr>
+						{% endfor %}
+							<tr>
+								<th><abbr title="ChampPerso concerant les intervenants">Intervenants</abbr></th>
+								{% for modele in entity.modeles %}
+									{% if modele.evenement %}<td class="text-centered" style="background-color: #f6f6f6"><i class="fa fa-check"></i></td>{% else %}<td></td>{% endif %}
+								{% endfor %}
+							</tr>
+					</table>
+					</div>
+				{% else %}
+					<p class="lead">Aucun gabarit de champPerso n'est encore associé à cette evenement ainsi qu'à ses formules.</p>
+					<hr/>
+					{% if entity.evenementFormule|length > 0 %}
+						<div class="units-row">
+						<div class="unit-70">
+							<p>
+								La evenement est associée à {{entity.evenementFormule|length}} formules :
+								<ul>
+									{% for ff in entity.evenementFormule %}
+										<li>{{ff.formule.id}} - {{ff.formule.description}} - {{ff.formule.tarif}}{% if ff.formule.tarif|number_format %}€{% endif %}</li>
+									{% endfor %}
+								</ul>
+							</p>
+						</div>
+						<div class="unit-30">
+							<a href="{{path('champPerso_edit', {'idevenement':entity.id, 'generation': 'generate'})}}" class="btn btn-green"><i class="fa fa-table"></i> Générer des champs supplémentaire (logistique)</a>
+						</div>
+						</div>
+					{% endif %}
+				{% endif %}
+
+
+			</div>
+		</div>
+	{% endfor %}
+</div>
+</div>
+{% endblock %}

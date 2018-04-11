@@ -1,0 +1,154 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+
+framework:
+    #esi:             ~
+    #translator:      { fallback: "%locale%" }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+        gc_probability: 0
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    form:
+        resources:
+            - '::form.html.twig'
+
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: true
+    bundles:        [OCIMEvenementsBundle, OCIMExportBundle, OCIMContactsBundle]
+    #java: /usr/bin/java
+    assets:
+        FontAwesome-otf:
+            inputs: '%kernel.root_dir%/Resources/public/fonts/FontAwesome.otf'
+            output: 'fonts/FontAwesome.otf'
+        fontawesome-webfont-eot:
+            inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.eot'
+            output: 'fonts/fontawesome-webfont.eot'
+        fontawesome-webfont-svg:
+            inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.svg'
+            output: 'fonts/fontawesome-webfont.svg'
+        fontawesome-webfont-ttf:
+            inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.ttf'
+            output: 'fonts/fontawesome-webfont.ttf'
+        fontawesome-webfont-woff:
+            inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.woff'
+            output: 'fonts/fontawesome-webfont.woff'
+        images:
+            inputs: '%kernel.root_dir%/Resources/public/img/coin_rouge.png'
+            output: 'img/coin_rouge.png'
+        sort_asc:
+            inputs: '%kernel.root_dir%/Resources/public/img/sort_asc.png'
+            output: 'img/sort_asc.png'
+        sort_desc:
+            inputs: '%kernel.root_dir%/Resources/public/img/sort_desc.png'
+            output: 'img/sort_desc.png'
+        sort_asc_disabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/sort_asc_disabled.png'
+            output: 'img/sort_asc_disabled.png'
+        sort_desc_disabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/sort_desc_disabled.png'
+            output: 'img/sort_desc_disabled.png'
+        sort_both:
+            inputs: '%kernel.root_dir%/Resources/public/img/sort_both.png'
+            output: 'img/sort_both.png'
+        back_enabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/back_enabled.png'
+            output: 'img/back_enabled.png'
+        back_disabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/back_disabled.png'
+            output: 'img/back_disabled.png'
+        forward_disabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/forward_disabled.png'
+            output: 'img/forward_disabled.png'
+        forward_enabled:
+            inputs: '%kernel.root_dir%/Resources/public/img/forward_enabled.png'
+            output: 'img/forward_enabled.png'
+        forward_enabled_hover:
+            inputs: '%kernel.root_dir%/Resources/public/img/forward_enabled_hover.png'
+            output: 'img/forward_enabled_hover.png'
+        back_enabled_hover:
+            inputs: '%kernel.root_dir%/Resources/public/img/back_enabled_hover.png'
+            output: 'img/back_enabled_hover.png'
+
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: "%kernel.root_dir%/Resources/java/compiler.jar"
+        #yui_css:
+        #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        # path:     "%database_path%"
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
+        dql:
+            datetime_functions:
+                YEAR: OCIM\EvenementsBundle\DQL\Year
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     wkhtmltopdf
+        options:
+          - { name: page-size, value: A4 }
+          - { name: zoom, value: 1 }
+          - { name: encoding, value: utf-8 }
+          - { name: dpi , value: 300 }
+          - { name: image-dpi , value: 300 }
+          - { name: image-quality , value: 100 }
+          - { name: margin-bottom , value: 7 }
+          - { name: margin-top , value: 7 }
+          - { name: margin-right , value: 7 }
+          - { name: margin-left , value: 7 }
+          - { name: page-width  , value: 210 }
+          - { name: page-height  , value: 297 }
+          - { name: disable-smart-shrinking  , value: false }
+          - { name: lowquality  , value: false }
+
+    image:
+        enabled:    false
+        binary:     wkhtmltoimage
+        options:    []

@@ -1,0 +1,30 @@
+formule:
+    path:     /
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:index" }
+
+formule_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:show" }
+
+formule_new:
+    path:     /new
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:new" }
+
+formule_create:
+    path:     /create
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:create" }
+    requirements: { _method: post }
+
+formule_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:edit" }
+
+formule_update:
+    path:     /{id}/update
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:update" }
+    requirements: { _method: post|put }
+
+formule_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMEvenementsBundle:Formule:delete" }
+    requirements: { _method: post|delete }

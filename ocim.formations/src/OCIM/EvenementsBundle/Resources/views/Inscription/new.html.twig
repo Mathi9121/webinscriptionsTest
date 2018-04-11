@@ -1,0 +1,260 @@
+{% extends '::app.html.twig' %}
+{% form_theme form '::form.html.twig' %}
+
+{% block  javascripts %}
+{{parent()}}
+<script type="text/javascript">
+	var availableTags = [
+		{% for tag in tags %}
+			"{{ tag.tag|capitalize }}",
+		{% endfor %}
+	];
+</script>
+{% javascripts
+	'%kernel.root_dir%/Resources/public/js/jquery-ui.min.js'
+	'@OCIMContactsBundle/Resources/public/js/Structure/ajoutStructure.js'
+	'@OCIMContactsBundle/Resources/public/js/Structure/tagsAdresse.js'
+	%}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+	'%kernel.root_dir%/Resources/public/css/autocomplete-ui.css'%}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{# Titres #}
+{% block title %}Nouvelle Inscription{% endblock %}
+{% block titre %}Nouvelle Inscription{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{{ path('evenement')}}">Evenements</a></li>
+<li><a href="{{ path('inscription', { 'idevenement': evenement.id }) }}">Inscriptions</a></li>
+<li><span>Nouvelle inscription</span></li>
+{% endblock %}
+
+
+{# Controls #}
+{% block controls %}
+{% endblock %}
+
+
+{% block body -%}
+
+
+{{form_start(form)}}
+{{ form_errors(form) }}
+<h2 class="text-centered"><i class="fa fa-graduation-cap"></i> {{evenement.intitule}}</h2><hr/>
+
+<div class="units-row">
+	<div class="unit-50 panel">
+		<div class="header">
+			<span class="titre">Inscription</span>
+			<span class="controls right group">
+			</span>
+		</div>
+
+		<div class="panel-body">
+			<div class="units-row end">
+				<div class="unit-33">{{ form_row(form.dateInscription) }}</div>
+				<div class="unit-33">{{ form_row(form.numberStatut) }}</div>
+				<div class="unit-33"><i class='fa fa-flask fa-fw'></i><br/>{{ form_widget(form.provenancePCST) }}</div>
+			</div>
+			{{ form_row(form.evenementformule) }}
+		</div>
+	</div>
+
+
+	<div class="unit-50 panel">
+		<div class="header">
+			<span class="titre">Attentes du stagiaire</span>
+			<span class="controls right group">
+			</span>
+		</div>
+
+		<div class="panel-body">
+			{{ form_widget(form.attentes) }}
+		</div>
+	</div>
+
+</div>
+
+
+
+<div class="units-row">
+	<div class="unit-50 panel">
+		<div class="header">
+			<span class="titre">Le stagiaire</span>
+			<span class="controls right group">
+			</span>
+		</div>
+
+		<div class="panel-body">
+			<div class="units-row end">
+				<div class="unit-20">
+					{{ form_row(form.stagiaire.civilite) }}
+				</div>
+				<div class="unit-80">
+					{{ form_row(form.stagiaire.nom) }}
+				</div>
+			</div>
+			{{ form_row(form.stagiaire.prenom) }}
+			{{ form_row(form.stagiaire.fonction) }}
+			{{ form_row(form.stagiaire.tel) }}
+			{{ form_row(form.stagiaire.fax) }}
+			{{ form_row(form.stagiaire.mail) }}
+
+		</div>
+
+
+	</div>
+
+	<div class="panel unit-50">
+		<div class="header">
+			<span class="titre">Adresse du stagiaire</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+
+		<div class="panel-body">
+			{{ form_row(form.stagiaire.adresse.nomStructure) }}
+			{{ form_row(form.stagiaire.adresse.adresse) }}
+			{{ form_row(form.stagiaire.adresse.adresseComplement) }}
+			{{ form_row(form.stagiaire.adresse.cP) }}
+			{{ form_row(form.stagiaire.adresse.ville) }}
+			{{ form_row(form.stagiaire.adresse.pays) }}
+			{{ form_row(form.stagiaire.adresse.tags) }}
+		</div>
+	</div>
+</div>
+
+<div class="units-row">
+	<div class="panel unit-50">
+		<div class="header">
+			<span class="titre">Contact Administratif</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+
+		<div class="panel-body">
+			<div class="units-row end">
+				<div class="unit-20">
+					{{ form_row(form.admin.civilite) }}
+				</div>
+				<div class="unit-80">
+					{{ form_row(form.admin.nom) }}
+				</div>
+			</div>
+			{{ form_row(form.admin.prenom) }}
+			{{ form_row(form.admin.fonction) }}
+			{{ form_row(form.admin.tel) }}
+			{{ form_row(form.admin.mail) }}
+
+		</div>
+	</div>
+
+	<div class="panel unit-50">
+		<div class="header">
+			<span class="titre">Convention</span>
+		</div>
+
+		<div class="panel-body">
+			<ul class="forms-inline-list">
+				<li>
+					{{form_row(form.statutConvention)}}
+				</li>
+			</ul>
+			<hr/>
+			<div class="conventionblock">
+				<div class="units-row end">
+					<div class="unit-50">
+						{{form_row(form.convention.numero)}}
+						{{form_row(form.convention.edition)}}
+					</div>
+					<div class="unit-50">
+						{{form_row(form.convention.etape1)}}
+						{{form_row(form.convention.etape2)}}
+						{{form_row(form.convention.etape3)}}
+						{{form_row(form.convention.etape4)}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+<div class="units-row">
+	<div class="panel unit-50">
+		<div class="header">
+			<span class="titre">Signataire</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+
+		<div class="panel-body">
+			<div class="units-row end">
+				<div class="unit-20">
+					{{ form_row(form.signataire.civilite) }}
+				</div>
+				<div class="unit-80">
+					{{ form_row(form.signataire.nom) }}
+				</div>
+			</div>
+			{{ form_row(form.signataire.prenom) }}
+			{{ form_row(form.signataire.fonction) }}
+			{{ form_row(form.signataire.mail) }}
+		</div>
+
+	</div>
+	<div class="panel unit-50">
+		<div class="header">
+			<span class="titre">Organisme financeur</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+		<div class="panel-body">
+			{{ form_row(form.statutFinancement) }}
+			{{ form_row(form.signataire.adresse.nomStructure) }}
+			{{ form_row(form.signataire.adresse.adresse) }}
+			{{ form_row(form.signataire.adresse.adresseComplement) }}
+			{{ form_row(form.signataire.adresse.cP) }}
+			{{ form_row(form.signataire.adresse.ville) }}
+			{{ form_row(form.signataire.adresse.pays) }}
+			<div class="units-row end">
+				<div class="unit-70">
+					{{ form_row(form.signataire.adresse.type) }}
+				</div>
+				<div class="unit-30">
+					<label for="ajouttypes">&nbsp;
+						<a id="ajouttypes" href="#" class="btn btn-smaller" style="display:block" data-url="{{path('structure_ajout')}}"><i class="fa fa-plus"></i> Ajouter un type</a>
+					</label>
+				</div>
+			</div>
+			<label>Tags
+				{{form_widget(form.signataire.adresse.tags)}}
+				<div class="forms-desc">Liste de mots clés, séparés par des virgules. Ex : Collectivité territoriale, Association, Société Anonyme</div>
+			</label>
+		</div>
+	</div>
+</div>
+
+
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('inscription', { 'idevenement': evenement.id }) }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour aux inscriptions</a></div>
+	<div class="right">{{ form_widget(form.submit) }}</div>
+</footer>
+
+{{ form_end(form)}}
+
+
+{% endblock %}

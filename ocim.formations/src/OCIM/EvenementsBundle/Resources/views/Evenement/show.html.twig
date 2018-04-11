@@ -1,0 +1,231 @@
+{% extends '::app.html.twig' %}
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+	'@OCIMEvenementsBundle/Resources/public/css/evenements.css'
+filter='cssrewrite' %}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+	'@OCIMEvenementsBundle/Resources/public/js/Evenement/jquery.nouislider.min.js'
+	"%kernel.root_dir%/Resources/public/js/Chart.min.js"
+	%}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script>
+
+var couleurs = [];
+couleurs['2'] = 	"rgba(255,165,0, 0.3)";
+couleurs['1'] = 		"rgba(3, 207, 3,  0.3)";
+couleurs['3']	= 		"rgba(255, 54, 0, 0.3)";
+couleurs['2hover'] = 	"rgba(255,165,0, 0.5)";
+couleurs['1hover'] = 		"rgba(3, 207, 3,  0.5)";
+couleurs['3hover']	= 		"rgba(255, 54, 0, 0.5)";
+
+	var dataStatus = [
+    {% for stat in entity._count %}
+		{% set label = "" %}
+		{% if stat.statut == "1" %}
+			{% set label = "Inscriptions acceptés" %}
+		{% elseif stat.statut == "2" %}
+			{% set label = "Inscriptions en attentes" %}
+		{% else %}
+			{% set label = "Inscriptions annulées" %}
+		{% endif %}
+		{
+			value: {{stat.1}},
+			color: couleurs['{{stat.statut}}'],
+			highlight: couleurs['{{stat.statut}}hover'],
+			label: "{{label}}"
+		},
+	{% endfor %}
+	];
+
+
+
+	var dataDates = {
+    labels: [' {{ inscriptions|keys|join("','")|raw }} '],
+    datasets: [
+        {
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [{{ inscriptions|join(",") }}],
+
+		},
+    ]
+};
+	var canvas1 = $("#statuts-inscriptions").get(0).getContext("2d");
+	var ratioInscriptions = new Chart(canvas1).Doughnut(dataStatus, {});
+	var canvas2 = $("#dates-inscriptions").get(0).getContext("2d");
+	var ratioInscriptions = new Chart(canvas2).Line(dataDates, {
+		responsive: true,
+		maintainAspectRatio: false,
+		tooltipTemplate: {% verbatim %} "<%if (label){%><%=label%>: <%}%><%= value %> inscriptions" {% endverbatim %},
+	});
+
+</script>
+{% endblock %}
+
+
+{# Titres #}
+{% block title %} Détails de la evenement : {{entity.intitule}}{% endblock %}
+{% block titre %}Détails : {{entity.intitule}}{% endblock %}
+{% block breadcrumbs %}
+	<li><span>Détails</span></li>
+{% endblock %}
+
+{# Controls #}
+{% block controls %}
+{{ form(delete_form) }}
+{% endblock %}
+
+{# CONTENT #}
+{% block body -%}
+
+<div class="units-row">
+	<div class="unit-60 panel">
+		<div class="header">
+			<span class="titre">information sur la evenement</span>
+				<span class="controls right group">
+
+				</span>
+		</div>
+
+		<div class="panel-body">
+			<table class="width-100 ">
+			<tr>
+				<th><i class="fa fa-info fa-fw"></i> Identifiant</th>
+				<td><strong>{{ entity.id }}</strong></td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-graduation-cap fa-fw"></i> Intitulé</th>
+				<td>{{ entity.intitule }}</td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-cube fa-fw"></i> Type</th>
+				<td>{{ entity.type }}</td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-map-marker fa-fw"></i> Lieu</th>
+				<td>{{ entity.lieu }}</td>
+			</tr>
+			<tr>
+				<th><i class='fa fa-calendar fa-fw'></i> Date</th>
+				<td>{{entity.dateText}}</td>
+			</tr>
+			<tr>
+				<th><i class='fa fa-calendar fa-fw'></i> Date de début</th>
+				<td>{{ entity.dateDebut|date('d/m/Y') }}</td>
+			</tr>
+			<tr>
+				<th><i class='fa fa-calendar fa-fw'></i> Date de fin</th>
+				<td>{{ entity.dateFin|date('d/m/Y') }}</td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-tachometer fa-fw"></i> Nombre d&apos;heures</th>
+				<td>{{ entity.nbHeures }}</td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-tachometer fa-fw"></i> Nombre de jours</th>
+				<td>{{ entity.nbJours|replace('.0', '') }}</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="unit-40">
+	<div class="panel">
+		<div class="header">
+			<span class="titre">Formules liées</span>
+				<span class="controls right group">
+
+				</span>
+		</div>
+		<div class="panel-body">
+				{% for formule in formules %}
+						<div data-tools="accordion">
+							<a href="#panel-{{ formule.id }}" class="accordion-title">{{ formule.description }}</a>
+							<div id="panel-{{ formule.id }}" class="accordion-panel">
+
+								<ul class="blocks-4 details-formules" >
+									<li><i class="fa fa-eur fa-2x"></i>{{ formule.tarif}}</li>
+
+									{% if formule.midi %}
+										<li><i class="fa fa-cutlery fa-2x"></i>Midi</li>
+									{% else %}
+										<li class="noncompris"><del><i class="fa fa-cutlery fa-2x"></i>Midi</del></li>
+									{% endif%}
+									{% if formule.soir %}
+										<li><i class="fa fa-cutlery fa-2x"></i>Soir</li>
+									{% else %}
+										<li class="noncompris"><del><i class="fa fa-cutlery fa-2x"></i>Soir</del></li>
+									{% endif%}
+
+									{% if formule.nuit %}
+										<li><i class="fa fa-moon-o fa-2x"></i>Nuit</li>
+									{% else %}
+										<li class="noncompris"><del><i class="fa fa-moon-o fa-2x"></i>Nuit</del></li>
+									{% endif%}
+								</ul>
+							</div>
+						</div>
+
+				{% endfor %}
+		</div>
+	</div>
+
+	<p class="text-centered" style="margin-top: 70px;">
+		<a href="{{path('inscription', {'idevenement': entity.id})}}" class="btn btn-green"><i class="fa fa-users fa-fw"></i> Consulter les inscriptions à cette evenement</a>
+	</p>
+	</div>
+</div>
+
+<div class="units-row">
+
+	<div class="unit-60 panel">
+		<div class="header">
+			<span class="titre">Progression des inscriptions</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+		<div class="panel-body">
+			<canvas id="dates-inscriptions" height="350"></canvas>
+		</div>
+	</div>
+
+	<div class="unit-40 panel">
+		<div class="header">
+			<span class="titre">Statuts des inscriptions</span>
+			<span class="controls right group">
+
+			</span>
+		</div>
+		<div class="panel-body">
+			<canvas id="statuts-inscriptions" height="400"></canvas>
+		</div>
+	</div>
+
+</div>
+
+
+<footer id="footer" class="group">
+	<div class="left">
+		<a href="{{ path('evenement') }}" class="btn btn-back">Retour à la liste</a>
+	</div>
+	<div class="right">
+		<a href="{{ path('evenement_edit', { 'id': entity.id }) }}" class="btn btn-green btn-edit"><i class="fa fa-pencil fa-fw"></i>Modifier</a>
+		<div style='display:inline-block'>{{ form(delete_form) }}</div>
+	</div>
+</footer>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends '::app.html.twig' %}
+
+
+{% block title %}Intervenant{% endblock %}
+{% block titre %}Intervenant - détails{% endblock %}
+
+{% block controls %}
+{% endblock %}
+
+{% block body -%}
+<div class="units-row">
+  <div class="unit-40 panel">
+    <div class="panel-body">
+    <table class="">
+        <tbody>
+            <tr>
+                <th>Civilite</th>
+                <td>{{ entity.civilite }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ entity.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ entity.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Fonction</th>
+                <td>{{ entity.fonction }}</td>
+            </tr>
+            <tr>
+                <th>Tel</th>
+                <td>{{ entity.tel }}</td>
+            </tr>
+            <tr>
+                <th>Mail</th>
+                <td>{{ entity.mail }}</td>
+            </tr>
+            <tr>
+                <th>Commentaires</th>
+                <td>{{ entity.commentaire }}</td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  </div>
+  <div class="unit-60 panel">
+    <div class="header">
+      <span class="titre">Evenement(s) liée(s)</span>
+    </div>
+    <div class="panel-body">
+      <table>
+        {% for evenement in entity.evenements %}
+        <tr>
+          <td>{{evenement.intitule}}</td>
+          <td><a href="{{path('inscription', {'idevenement': evenement.id, 'id': entity.id})}}#intervenants"><i class="fa fa-chevron-right fa-fw"></i></a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+    <footer id='footer' class="group">
+      <div class="left"><a class="btn btn-back" href="{{ path('personne') }}"><i class="fa fa-chevron-left fa-fw"></i>Retour</a></div>
+    </footer>
+{% endblock %}

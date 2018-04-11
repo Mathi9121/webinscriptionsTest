@@ -1,0 +1,47 @@
+OCIM\EvenementsBundle\Entity\evenementFormule:
+    type: entity
+    manyToOne:
+        formule:
+            targetEntity: Formule
+            inversedBy: evenementFormule
+            fetch: EAGER
+            cascade: ["persist"]
+            joinColumn:
+                name: formule_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        evenement:
+            targetEntity: Evenement
+            inversedBy: evenementFormule
+            fetch: EAGER
+            cascade: ["persist"]
+            joinColumn:
+                name: evenement_id
+                referencedColumnName: id
+                onDelete: CASCADE
+    oneToMany:
+        inscriptions:
+            targetEntity: Inscription
+            mappedBy: evenementformule
+            cascade: ["persist"]
+    manyToMany:
+        modeles:
+            targetEntity: ModeleChampPerso
+            inversedBy: evenementFormule
+            cascade: ["all"]
+            joinTable:
+                name: evenementformule_modele
+                joinColumns:
+                    evenementformule_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    modele_id:
+                        referencedColumnName: id
+    table: evenement_formule
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    lifecycleCallbacks: {  }

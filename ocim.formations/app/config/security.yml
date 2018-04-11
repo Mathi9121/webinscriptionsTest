@@ -1,0 +1,37 @@
+security:
+    encoders:
+        OCIM\UserBundle\Entity\User:
+            algorithm: sha512
+            encode_as_base64: true
+            iterations: 1
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        main:
+            entity: {class: OCIM\UserBundle\Entity\User, property: login}
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin:
+            pattern: ^/
+            anonymous:  ~
+            form_login:
+                check_path: /check
+                login_path: /connexion
+                use_forward: true
+            logout:
+                path:   /deconnexion
+                target: /
+    access_control:
+        - { path: ^/inscription , roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_ADMIN }
+        - { host: form, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+    acl:
+        connection: default

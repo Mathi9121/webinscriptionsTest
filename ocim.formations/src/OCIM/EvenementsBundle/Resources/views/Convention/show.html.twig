@@ -1,0 +1,56 @@
+{% extends '::app.html.twig' %}
+
+{% block body -%}
+    <h1>Convention</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Numero</th>
+                <td>{{ entity.numero }}</td>
+            </tr>
+            <tr>
+                <th>Edition</th>
+                <td>{{ entity.edition|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Envoipresidentu2ex</th>
+                <td>{{ entity.envoiPresidentU2ex|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Retourpresidentu2ex</th>
+                <td>{{ entity.retourPresidentU2ex|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Envoiorganisme2ex</th>
+                <td>{{ entity.envoiOrganisme2ex|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Retourorganisme1ex</th>
+                <td>{{ entity.retourOrganisme1ex|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Envoipresidentu1ex</th>
+                <td>{{ entity.envoiPresidentU1ex|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('convention') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('convention_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

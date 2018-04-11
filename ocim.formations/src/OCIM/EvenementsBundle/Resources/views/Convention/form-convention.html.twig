@@ -1,0 +1,48 @@
+{% form_theme form '::form.html.twig' %}
+
+{{form_start(form)}}
+<div class='units-row '>
+<div class='units-row unit-66 unit-centered'>
+
+	<div class="unit-50 panel panel-body">
+		<label>
+			Numéro de convention
+			<ul class="forms-inline-list">
+				<li>{{form_widget(form.numero)}}</li>
+				<li>La dernière convention enregistrée portait le numéro : {{ derniere_convention.num }}</li>
+			</ul>
+		</label>
+		{{form_row(form.edition)}}
+	</div>
+
+	<div class="unit-50 panel panel-body">
+		<h2>Cycle de vie de la convention</h2>
+		<label>
+			{{ form.etape1.vars.label }}
+			<div class="input-groups">
+				<span class="input-prepend">1</span>{{form_widget(form.etape1)}}
+			</div>
+		</label>
+		<label>
+			{{ form.etape2.vars.label }}
+			<div class="input-groups">
+				<span class="input-prepend">2</span>{{form_widget(form.etape2)}}
+			</div>
+		</label>
+		<label>
+			{{ form.etape3.vars.label }}
+			<div class="input-groups">
+				<span class="input-prepend">3</span>{{form_widget(form.etape3)}}
+			</div>
+		</label>
+		<label>
+			{{ form.etape4.vars.label }}
+			<div class="input-groups">
+				<span class="input-prepend">4</span>{{form_widget(form.etape4)}}
+			</div>
+		</label>
+	</div>
+</div>
+</div>
+{{form_rest(form)}}
+{{form_end(form)}}

@@ -1,0 +1,27 @@
+OCIM\UserBundle\Entity\User:
+    type: entity
+    table: null
+    repositoryClass: OCIM\UserBundle\Entity\UserRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nom:
+            type: string
+            length: 255
+        prenom:
+            type: string
+            length: 255
+        login:
+            type: string
+            length: 255
+        mail:
+            type: string
+            length: 255
+        password:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

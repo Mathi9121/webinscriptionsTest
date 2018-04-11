@@ -1,0 +1,15 @@
+{% extends '::app.html.twig' %}
+{% form_theme form '::form.html.twig' %}
+{% block body -%}
+    <h1>evenementFormule creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('champPerso') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

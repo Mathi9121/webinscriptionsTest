@@ -1,0 +1,132 @@
+{% extends '::app.html.twig' %}
+
+{% block controls %}
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% stylesheets
+'@OCIMEvenementsBundle/Resources/public/css/convention.css'
+'%kernel.root_dir%/Resources/public/css/popup.css'
+filter='cssrewrite' %}
+<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+  '@OCIMEvenementsBundle/Resources/public/js/Convention/conventions.js'
+  '%kernel.root_dir%/Resources/public/js/popup.js'
+  '@OCIMEvenementsBundle/Resources/public/js/Convention/export-convention.js'
+  %}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+
+{% block title %}
+Gestion des conventions
+{% endblock %}
+
+{% block titre %}
+Gestion des conventions
+{% endblock %}
+
+{% block body -%}
+<div class='hide' id="href-derniernumero" data-href="{{path('convention_derniernumero')}}"></div>
+<div class='hide' id="href-createConvention" data-href="{{path('convention_createConvention')}}"></div>
+<div class='hide' id="href-updateConvention" data-href="{{path('convention_updateetape')}}"></div>
+<div class='hide' id="href-liensexport" data-href="{{path('documents_liensconventions')}}"></div>
+<div class="panel">
+  <div class="panel-body">
+    <div class="table-container">
+    <table class="table-striped width-100">
+        <thead>
+            <tr>
+                <th>Civilité</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th class="text-centered">Convention</th>
+                <th class="text-centered">Numero</th>
+                <th class="text-centered">Date d'édition</th>
+                <th class="text-centered"><abbr title="Signature de Catherine">Etape-1</abbr></th>
+                <th class="text-centered"><abbr title="Envoi 2 exemplaires à l'organisme">Etape-2</abbr></th>
+                <th class="text-centered"><abbr title="Retour d'un exemplaire signé">Etape-3</abbr></th>
+                <th class="text-centered"><abbr title="Envoi pour archivage">Etape-4</abbr></th>
+                <th class="text-centered"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+        {% if ((entity.statutConvention == true)or(entity.statutConvention is null))or((entity.statutConvention == false)and(entity.convention)) %}
+            <tr data-idconvention="{{(entity.convention)? entity.convention.id}}" data-idinscription="{{entity.id}}" class="{{ (entity.statutConvention == false and entity.statutConvention is not null)? "strike"}}">
+                <td>{{entity.stagiaire.civilite}}</td>
+                <td>{{entity.stagiaire.nom}}</td>
+                <td>{{entity.stagiaire.prenom}}</td>
+                <td class="text-centered">
+                  {% if entity.statutConvention is null %}
+                    <span class="label label-yellow label-outline">En attente</span>
+                  {% elseif entity.statutConvention %}
+                  <span class="label label-green">Confirmée</span>
+                  {% elseif entity.statutConvention == false %}
+                  <span class="label label-red">Annulée</span>
+                  {% endif %}
+                </td>
+                {% if entity.convention %}
+                  <td class="num-convention text-centered">{{ entity.convention.edition|date('Y/m') }}/<span>{{ entity.convention.numero }}</span></td>
+                  <td class="edition-convention text-centered">
+                      {{ entity.convention.edition|date('d/m/Y') }}
+                  </td>
+                  <td data-etape="1" class="etape-convention text-centered {{(entity.convention.etape1 is not null)?'valide'}}">
+                    {% if entity.convention.etape1 is not null %}
+                      {{ entity.convention.etape1|date('d/m/Y') }}
+                    {% endif %}
+                  </td>
+                  <td data-etape="2" class="etape-convention text-centered {{(entity.convention.etape2 is not null)?'valide'}}">
+                    {% if entity.convention.etape2 is not null %}
+                      {{ entity.convention.etape2|date('d/m/Y') }}
+                    {% endif %}
+                  </td>
+                  <td data-etape="3" class="etape-convention text-centered {{(entity.convention.etape3 is not null)?'valide'}}">
+                    {% if entity.convention.etape3 is not null %}
+                      {{ entity.convention.etape3|date('d/m/Y') }}
+                    {% endif %}
+                  </td>
+                  <td data-etape="4" class="etape-convention text-centered {{(entity.convention.etape4 is not null)?'valide'}}">
+                    {% if entity.convention.etape4 is not null %}
+                      {{ entity.convention.etape4|date('d/m/Y') }}
+                    {% endif %}
+                  </td>
+                {% else %}
+                  <td colspan="6" class="no-convention text-centered"></td>
+                {% endif %}
+                  <td class="">
+                    <a title="Exporter" href="#" class="btn btn-smaller btn-green export-convention"><i class="fa fa-download"></i></a>
+                  </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+    {# pagination #}
+  <div style="display:table; margin: 10px auto">
+    <ul class="pagination">
+      {% if slug != 1 %}<li><a href="{{path('convention', {'slug': slug-1})}}">&larr;</a></li>{% endif %}
+
+      {% for i in 1..(slugmax.1/10)|round+1 %}
+        {% if i == slug %}
+          <li><span>{{i}}</span></li>
+        {% else %}
+          <li><a href="{{path('convention', {'slug': i})}}">{{i}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if slug < (slugmax.1 / 10) %}<li><a href="{{path('convention', {'slug': slug+1})}}">&rarr;</a></li>{% endif %}
+    </ul>
+  </div>
+
+</div>
+</div>
+{% endblock %}

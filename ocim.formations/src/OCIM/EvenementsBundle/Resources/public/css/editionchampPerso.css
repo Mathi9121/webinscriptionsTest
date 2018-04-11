@@ -1,0 +1,17 @@
+#place ul{
+	background-color: #f6f6f6;
+	display:table;
+}
+
+#place ul li:first-of-type {
+	background-color: #aaaaaa;
+	color: #fff;
+	padding: 8px 15px;
+}
+#place ul li.ui-handle {
+	cursor: move;
+}
+#place ul.new {
+	background-color: #FBE2A8;
+
+}

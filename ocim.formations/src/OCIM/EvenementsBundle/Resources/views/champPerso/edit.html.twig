@@ -1,0 +1,87 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block  javascripts %}
+{{ parent() }}
+{% javascripts '@OCIMEvenementsBundle/Resources/public/js/ChampPerso/formModele.js'
+	'@OCIMEvenementsBundle/Resources/public/js/ChampPerso/jquery-ui-1.9.2.custom.min.js'%}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+	'@OCIMEvenementsBundle/Resources/public/css/editionchampPerso.css'
+	filter='cssrewrite' %}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block title %}Edition Logistique{% endblock %}
+{% block titre %}Edition Logistique{% endblock %}
+{% block controls %}
+	{{ form(delete_form) }}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><span>{{entity.intitule}}</span></li>
+{% endblock %}
+
+{% block body -%}
+
+<h1 class="text-centered"><i class="fa fa-graduation-cap"></i>{{entity.intitule}}</h1><hr/>
+<p class="text-centered"><i class="fa fa-calendar"></i> {{entity.dateText|capitalize}}</p>
+
+{{form_start(edit_form)}}
+<div class="panel">
+	<div class="header">
+		<span class="titre">Champs supplémentaires pour les inscriptions</span>
+		<span class="controls right group">
+			<a href="#" class="btn ajoutPrototype"><i class="fa fa-plus fa-fw"></i>Ajouter une question</a>
+		</span>
+	</div>
+	<div class="panel-body">
+		<div class="units-row">
+			<div class="unit-60" id="place">
+				{% for modele in edit_form.modeles %}
+					<ul class="forms-inline-list" data-prototype="{% filter escape %}{% include 'OCIMEvenementsBundle:champPerso:prototypeFormModeleChampPerso.html.twig' with {'form': edit_form.modeles.vars.prototype} %}{% endfilter %}">
+						{{ form_widget(modele.ordre) }}
+						<li class="ui-handle"></li>
+						<li>
+							<span class="input-prepend"><i class="fa fa-calendar"></i></span> {{ form_widget(modele.date) }}
+						</li>
+						<li>{{ form_widget(modele.description) }}</li>
+						<li>{{ form_widget(modele.typeReponse) }}</li>
+						<li>{{ form_widget(modele.evenementFormule) }}</li>
+						<li>{{ form_widget(modele.intervenant) }}</li>
+						<li></li>
+					</ul>
+				{% endfor %}
+			</div>
+			<div class="unit-40">
+				Formules attachées à la evenement :
+				<ul>
+					{% for ff in entity.evenementFormule %}
+						<li><span class="label label-blue">{{ ff.formule.id }}</span> {{ff.formule.description|capitalize}}</li>
+					{% endfor %}
+				</ul>
+				<br/>
+				<p class="text-centered">
+					<a href="{{path('inscription', {'idevenement': entity.id})}}#champPerso" class="btn btn-big"><i class="fa fa-chevron-left fa-fw"></i>Retour aux inscriptions</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer id="footer" class="group">
+	<div class="left"><a href="{{ path('champPerso') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour</a></div>
+	<div class="right">{{ form_widget(edit_form.submit) }}</div>
+</footer>
+
+
+{{ form_rest(edit_form)}}
+{{ form_end(edit_form)}}
+
+{% endblock %}

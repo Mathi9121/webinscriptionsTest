@@ -1,0 +1,160 @@
+<?php
+
+namespace OCIM\EvenementsBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * evenementFormule
+ */
+class evenementFormule
+{
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var \OCIM\EvenementsBundle\Entity\Inscription
+     */
+    private $inscription;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $modeles;
+
+    /**
+     * @var \OCIM\EvenementsBundle\Entity\Formule
+     */
+    private $formule;
+
+    /**
+     * @var \OCIM\EvenementsBundle\Entity\Evenement
+     */
+    private $evenement;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->modeles = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set inscription
+     *
+     * @param \OCIM\EvenementsBundle\Entity\Inscription $inscription
+     * @return evenementFormule
+     */
+    public function setInscription(\OCIM\EvenementsBundle\Entity\Inscription $inscription = null)
+    {
+        $this->inscription = $inscription;
+
+        return $this;
+    }
+
+    /**
+     * Get inscription
+     *
+     * @return \OCIM\EvenementsBundle\Entity\Inscription 
+     */
+    public function getInscription()
+    {
+        return $this->inscription;
+    }
+
+    /**
+     * Add modeles
+     *
+     * @param \OCIM\EvenementsBundle\Entity\ModeleChampPerso $modeles
+     * @return evenementFormule
+     */
+    public function addModele(\OCIM\EvenementsBundle\Entity\ModeleChampPerso $modeles)
+    {
+        $this->modeles[] = $modeles;
+
+        return $this;
+    }
+
+    /**
+     * Remove modeles
+     *
+     * @param \OCIM\EvenementsBundle\Entity\ModeleChampPerso $modeles
+     */
+    public function removeModele(\OCIM\EvenementsBundle\Entity\ModeleChampPerso $modeles)
+    {
+        $this->modeles->removeElement($modeles);
+    }
+
+    /**
+     * Get modeles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getModeles()
+    {
+        return $this->modeles;
+    }
+
+    /**
+     * Set formule
+     *
+     * @param \OCIM\EvenementsBundle\Entity\Formule $formule
+     * @return evenementFormule
+     */
+    public function setFormule(\OCIM\EvenementsBundle\Entity\Formule $formule = null)
+    {
+        $this->formule = $formule;
+
+        return $this;
+    }
+
+    /**
+     * Get formule
+     *
+     * @return \OCIM\EvenementsBundle\Entity\Formule 
+     */
+    public function getFormule()
+    {
+        return $this->formule;
+    }
+
+    /**
+     * Set evenement
+     *
+     * @param \OCIM\EvenementsBundle\Entity\Evenement $evenement
+     * @return evenementFormule
+     */
+    public function setEvenement(\OCIM\EvenementsBundle\Entity\Evenement $evenement = null)
+    {
+        $this->evenement = $evenement;
+
+        return $this;
+    }
+
+    /**
+     * Get evenement
+     *
+     * @return \OCIM\EvenementsBundle\Entity\Evenement 
+     */
+    public function getEvenement()
+    {
+        return $this->evenement;
+    }
+	
+	public function __toString(){
+		return $this->getFormule()->getDescription();
+	}
+}

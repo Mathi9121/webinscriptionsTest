@@ -1,0 +1,34 @@
+OCIM\EvenementsBundle\Entity\Convention:
+    type: entity
+    table: null
+    oneToOne:
+        inscription:
+            targetEntity: Inscription
+            mappedBy: convention
+    repositoryClass: OCIM\EvenementsBundle\Entity\ConventionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        numero:
+            type: integer
+            nullable: true
+        edition:
+            type: date
+            nullable: true
+        etape1:
+            type: date
+            nullable: true
+        etape2:
+            type: date
+            nullable: true
+        etape3:
+            type: date
+            nullable: true
+        etape4:
+            type: date
+            nullable: true
+    lifecycleCallbacks: {  }

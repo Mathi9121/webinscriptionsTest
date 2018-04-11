@@ -1,0 +1,52 @@
+{% extends '::app.html.twig' %}
+
+{% block body -%}
+    <h1>Personne creation</h1>
+
+<form action="{{ path('personne_create') }}" method="post" class="forms units-row" {{ form_enctype(form) }}>
+
+<fieldset>
+	<legend>Nouveau contact</legend>
+<div class="units-row end">
+	<div class="unit-33">
+		<div class="units-row end">
+			<div class="unit-50">{{ form_row(form.type) }}</div>
+			<div class="unit-50">{{ form_row(form.civilite) }}</div>
+		</div>
+	</div>
+	<div class="unit-33">{{ form_row(form.nom) }}</div>
+	<div class="unit-33">{{ form_row(form.prenom) }}</div>
+</div>
+
+<div class="units-row end">
+	<div class="unit-33">{{ form_row(form.fonction) }}</div>
+	<div class="unit-33">{{ form_row(form.tel) }}</div>
+	<div class="unit-33">{{ form_row(form.fax) }}</div>
+</div>
+
+<div class="units-row end">
+	<div class="unit-50">{{ form_row(form.mail) }}</div>
+</div>
+</fieldset>
+
+
+<fieldset>
+	<legend>Adresse du contact</legend>
+	{{ form_row(form.adresse.nomStructure) }}
+
+<div class="units-row end">
+	<div class="unit-50">{{ form_row(form.adresse.adresse) }}</div>
+	<div class="unit-50">{{ form_row(form.adresse.adresseComplement) }}</div>
+</div>
+
+<div class="units-row end">
+	<div class="unit-33">{{ form_row(form.adresse.cP) }}</div>
+	<div class="unit-33">{{ form_row(form.adresse.ville) }}</div>
+	<div class="unit-33">{{ form_row(form.adresse.pays) }}</div>
+</div>
+</fieldset>
+
+{{ form_rest(form) }}
+<a href="{{ path('personne') }}">Retour à la liste</a>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+OCIM\EvenementsBundle\Entity\TypeEvenement:
+    type: entity
+    oneToMany:
+      evenements:
+        targetEntity: Evenement
+        mappedBy: type
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

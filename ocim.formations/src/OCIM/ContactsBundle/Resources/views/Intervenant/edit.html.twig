@@ -1,0 +1,112 @@
+{% extends '::app.html.twig' %}
+{% form_theme edit_form '::form.html.twig' %}
+
+{% block  javascripts %}
+{{parent()}}
+<script type="text/javascript">
+	var availableTags = [
+		{% for tag in tags %}
+			"{{ tag.tag|capitalize }}",
+		{% endfor %}
+	];
+</script>
+{% javascripts
+	'%kernel.root_dir%/Resources/public/js/jquery-ui.min.js'
+	'@OCIMContactsBundle/Resources/public/js/Structure/tagsAdresse.js'
+	%}
+				<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+	'%kernel.root_dir%/Resources/public/css/autocomplete-ui.css'%}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block title %}Edition - Intervenant{% endblock %}
+{% block titre %}Intervenant - Edition{% endblock %}
+{% block controls %}{% endblock %}
+
+
+{% block breadcrumbs %}
+	{% if(idevenement == "null") %}
+	<li><a href="{{path('personne')}}">Contacts</a></li>
+	{% else %}
+		<li><a href="{{path('evenement')}}">Evenements</a></li>
+		<li><a href="{{path('inscription', {'idevenement': idevenement})}}">Inscriptions</a></li>
+	{% endif %}
+	<li><span>Intervenant - Edition</span></li>
+{% endblock %}
+
+
+{% block body -%}
+{{form_start(edit_form)}}
+<div class="units-row">
+<div class="unit-50">
+	<div class="panel" style="margin-bottom:1.65em">
+		<div class="header">
+			<span class="titre">Intervenant</span>
+		</div>
+
+		<div class="panel-body">
+			<div class="units-row end">
+				<div class="unit-20">{{ form_row(edit_form.civilite) }}</div>
+				<div class="unit-80">{{ form_row(edit_form.nom) }}</div>
+			</div>
+				{{form_row(edit_form.prenom)}}
+				{{form_row(edit_form.fonction)}}
+				{{form_row(edit_form.tel)}}
+				{{form_row(edit_form.mail)}}
+
+		</div>
+	</div>
+	<div class="panel">
+		<div class="header">
+			<span class="titre">Commentaires/Observations</span>
+		</div>
+
+		<div class="panel-body">
+			{{form_widget(edit_form.commentaire)}}
+		</div>
+	</div>
+
+</div>
+	<div class="unit-50">
+	<div class="panel" >
+		<div class="header">
+			<span class="titre">Structure</span>
+		</div>
+
+		<div class="panel-body">
+			{{form_row(edit_form.adresse.nomStructure)}}
+			{{form_row(edit_form.adresse.adresse)}}
+			{{form_row(edit_form.adresse.adresseComplement)}}
+			{{form_row(edit_form.adresse.cP)}}
+			{{form_row(edit_form.adresse.ville)}}
+			{{form_row(edit_form.adresse.pays)}}
+			<label> Tags
+				{{form_widget(edit_form.adresse.tags)}}
+				<div class="forms-desc">Liste de mots clés, séparés par des virgules. Ex : Collectivité territoriale, Association, Société Anonyme, Bourgogne...</div>
+			</label>
+		</div>
+	</div>
+
+	</div>
+</div>
+
+
+<footer id="footer" class="group">
+	{% if (idevenement == "null") %}
+	<div class="left"><a href="{{ path('personne') }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour aux contacts</a></div>
+	{% else %}
+		<div class="left"><a href="{{ path('inscription', {'idevenement': idevenement}) }}" class="btn btn-back"><i class="fa fa-chevron-left fa-fw"></i>Retour aux inscriptions</a></div>
+	{% endif %}
+	<div class="right">{{form_widget(edit_form.submit)}}</div>
+</footer>
+
+{{form_rest(edit_form)}}
+{{form_end(edit_form)}}
+{% endblock %}

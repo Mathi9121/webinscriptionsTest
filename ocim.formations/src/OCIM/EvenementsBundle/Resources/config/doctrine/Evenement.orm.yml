@@ -1,0 +1,70 @@
+OCIM\EvenementsBundle\Entity\Evenement:
+    type: entity
+    inheritanceType: SINGLE_TABLE
+    discriminatorColumn:
+        name: discr
+        type: string
+    discriminatorMap:
+        event: Event
+        evenement: Evenement
+        formation: Formation
+    manyToOne:
+      type:
+        targetEntity: TypeEvenement
+        inversedBy: evenements
+        joinColumn:
+            name: type_id
+            referencedColumnName: id
+    oneToMany:
+        evenementFormule:
+            targetEntity: evenementFormule
+            mappedBy: evenement
+            cascade: ["all"]
+        modelesIntervenants:
+            targetEntity: ModeleChampPerso
+            mappedBy: evenement
+    manyToMany:
+        intervenants:
+            inversedBy: evenements
+            targetEntity: OCIM\ContactsBundle\Entity\Intervenant
+            orderBy:
+                nom: ASC
+            joinTable:
+                name: Intervenants
+                joinColumns:
+                    evenement_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    intervenant_id:
+                        referencedColumnName: id
+    table: null
+    repositoryClass: OCIM\EvenementsBundle\Entity\EvenementRepository
+    id:
+        id:
+            type: integer
+            id: true
+            default: 500
+            generator:
+                strategy: AUTO
+    fields:
+        intitule:
+            type: string
+            length: 255
+        lieu:
+            type: string
+            length: 255
+        dateDebut:
+            type: date
+        dateFin:
+            type: date
+        dateText:
+            type: string
+            length: 255
+        nbHeures:
+            type: string
+            length: 255
+        nbJours:
+            type: decimal
+            scale: 1
+            precision: 5
+    lifecycleCallbacks: {  }

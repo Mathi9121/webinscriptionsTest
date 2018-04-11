@@ -1,0 +1,168 @@
+{% extends "::app.html.twig" %}
+
+{% block stylesheets %}
+{{parent()}}
+{% stylesheets
+	'@OCIMEvenementsBundle/Resources/public/css/evenements.css'
+	'@OCIMEvenementsBundle/Resources/public/css/jquery.nouislider.css'
+filter='cssrewrite' %}
+	<link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+{% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+	'@OCIMEvenementsBundle/Resources/public/js/Evenement/jquery.nouislider.min.js'
+	'@OCIMEvenementsBundle/Resources/public/js/Evenement/filtresEvenement.js'
+	%}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{# Titres #}
+{% block title %}{{ (eventType == "event")? "Tous les &Eacute;vénements":"Toutes les Formations" }}{% endblock %}
+{% block titre %}{{ (eventType == "event")? "Tous les &Eacute;vénements":"Toutes les Formations" }}{% endblock %}
+{% block breadcrumbs %}
+	<li><span>Liste des {{ (eventType == "event")? "&Eacute;vénements":"Formations" }}</span></li>
+{% endblock %}
+
+{# Controls #}
+{% block controls %}
+<a href="{{ path('evenement_new', {'type': eventType}) }}" class="btn btn-green btn-outline"><i class="fa fa-plus"></i> {{ (eventType == "event")? "Nouvel &Eacute;vénement":"Nouvelle Formation" }}</a>
+{% endblock %}
+
+{# CONTENT #}
+{% block body  %}
+
+{# listes evenements #}
+<div class="panel">
+	<div class="header">
+		<span class="titre">{{ (eventType == "event")? "Tous les &Eacute;vénements":"Toutes les Formations" }}</span>
+			<span class="controls right group">
+				<label class="recherche"><i class="fa fa-search"></i><input type="text" class="" placeholder="Rechercher" id="recherche"/></label>
+				<a href="#" class="toggleFiltres"><i class="fa fa-filter"></i> Filtrer</a>
+			</span>
+	</div>
+
+	{# filtres #}
+	<div class="units-row end units-padding filtres hide">
+		<div class="unit-70">
+			{# date #}
+			<div id="date">
+				<div id="datefilter"></div>
+				<div id="event-start" class="left" data-date="{{datesminmax.1|date('U')}}"></div>
+				<div id="event-end" class="right" data-date="{{datesminmax.2|date('U')}}"></div>
+			</div>
+		</div>
+		<div class="unit-30">
+			{# select #}
+				<select name="select_multi" id="selectfilter" class="width-100">
+					<option value="tous" selected>Tous</option>
+					{% for type in types %}
+					<option value="{{type.id}}">{{type.type}}</option>
+					{% endfor %}
+				</select>
+		</div>
+	</div>
+
+<div class="panel-body">
+	<table class="table-hovered width-100">
+			{#<thead>
+				<tr>
+					<th><i class="fa fa-graduation-cap fa-fw"></i>Intitulé</th>
+					<th><i class="fa fa-map-marker fa-fw"></i>Lieu</th>
+					<th><i class="fa fa-calendar fa-fw"></i>Début</th>
+					<th></th>
+				</tr>
+			</thead>#}
+			<tbody>
+					{% set annee = "" %}
+			{% for evenement in evenements %}
+
+				{% if evenement.dateDebut|date('Y') != annee %}
+					<tr style="border-bottom: 2px dashed grey" class="annee-evenements">
+						<td colspan="4">
+							<h2 class="end" style="margin-top: 25px"><i class="fa {{ (eventType == "event")? "fa-calendar":"fa-graduation-cap" }} fa-fw"></i> {{ (eventType == "event")? "&Eacute;vénements":"Formations" }} <strong>{{evenement.dateDebut|date('Y')}}</strong></h2>
+						</td>
+					</tr>
+
+						<tr style="background-color:#F5F5F5; color:#959393" class="th-evenements">
+							<th><i class="fa {{ (eventType == "event")? "fa-calendar":"fa-graduation-cap" }} fa-fw"></i>Intitulé</th>
+							<th><i class="fa fa-map-marker fa-fw"></i>Lieu</th>
+							<th><i class="fa fa-calendar fa-fw"></i>Début</th>
+							<th></th>
+						</tr>
+
+					{% set annee = evenement.dateDebut|date('Y') %}
+				{% endif %}
+
+				<tr class="titre-evenement{{((id is defined)and( id == evenement.id ))? " highlight"}}" data-idevenement="{{evenement.id}}" data-typeevenement="{{evenement.type.id}}" data-debutstamp="{{ evenement.dateDebut|date("U") }}" data-finstamp="{{ evenement.dateFin|date("U") }}" data-debut="{{ evenement.dateDebut|date("d/m/Y") }}" data-fin="{{ evenement.dateFin|date("d/m/Y") }}">
+					<td><span class="fa-conteneur"><i class="fa fa-angle-right hide"></i></span>{{ evenement.intitule }} <span class="label right" title="Durée de la evenement">{{ evenement.nbJours| replace({".0" : ""}) }}J</span></td>
+					<td>{{ evenement.lieu }}</td>
+					<td>{{ evenement.dateDebut|date("d/m/Y") }}</td>
+					<td>
+						<div class="group">
+							{% set nbParticipants = 0 %}
+							{% set spanclass = '' %}
+							{% set text = '' %}
+							{% for statut in evenement._count %}
+								{% if statut.statut == '2' %}
+									{% set spanclass = 'badge-yellow' %}
+									{% set text = 'Inscriptions en attente de validation' %}
+								{% endif %}
+								{% if statut.statut == '1' %}
+									{% set spanclass = 'badge-green' %}
+									{% set text = 'Inscriptions validées' %}
+								{% endif %}
+								{% if statut.statut == '3' %}
+									{% set spanclass = 'badge-red' %}
+									{% set text = "Nombre d'inscriptions annulées" %}
+								{% endif %}
+								<span title="{{ text }}" class="badge {{ spanclass }}">{{ statut.1 }}</span>
+								{% set nbParticipants = nbParticipants + statut.1 %}
+							{% endfor %}
+						</div>
+					</td>
+				</tr>
+
+				{# details #}
+				<tr class="details-evenement hide">
+					<td colspan="4">
+						<div class="units-row units-split end">
+							<div class="unit-25 end">
+								<ul class="no-margin">
+									<li class="fa-ul">
+										<span class="fa-stack fa-lg">
+											<i class="fa fa-square fa-stack-2x"></i>
+											<span style="color: white" class=" fa-stack-1x fa-inverse">{{ nbParticipants }}</span>
+										</span>
+										Participants
+									</li>
+									<li class="fa-ul">
+										<span class="fa-stack fa-lg">
+											<i class="fa fa-square fa-stack-2x"></i>
+											<span style="color: white" class=" fa-stack-1x fa-inverse">{{evenement.intervenants|length}}</span>
+										</span>
+										Intervenants
+									</li>
+								</ul>
+							</div>
+							<div class="unit-75 end">
+								<ul class="blocks-4 blocks-mobile-50 end no-margin">
+									<li><a class="options-evenement" href="{{ path('inscription', { 'idevenement': evenement.id }) }}">	<span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-users fa-stack-1x fa-inverse"></i></span>Incriptions</a></li>
+									<li><a class="options-evenement" href="{{ path('evenement_show', { 'id': evenement.id }) }}">			<span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-info fa-stack-1x fa-inverse"></i></span>Détails</a></li>
+									<li><a class="options-evenement" href="{{path('champPerso_edit', {'idevenement': evenement.id })}}">	<span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-table fa-stack-1x fa-inverse"></i></span>Logistique/Personnalisation</a></li>
+									<li><a class="options-evenement" href="{{ path('evenement_edit', { 'id': evenement.id }) }}">			<span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-pencil fa-stack-1x fa-inverse"></i></span>Modifier</a></li>
+								</ul>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{#{% form_theme form '::form.html.twig' %}#}
+<style>
+.forms div{
+  padding-bottom: 8px;
+}
+.forms div.checkrow label{
+  text-align: left;
+}
+
+.forms div label{
+  width: 200px;
+  display: inline-block;
+  text-align:right;
+}
+#ocim_evenementsbundle_inscription_evenements label{
+  text-align:left
+}
+label.required{
+  color: red;
+}
+.forms .checkrow{
+  display:block;
+  margin-left:25px;
+}
+.forms .checkrow label{
+  width: auto;
+}
+.boite-choix{
+  background-color: #f8f8f8;
+  padding: 8px;
+  margin-bottom:5px;
+}
+p#countchar{
+  color: grey;
+  font-style: italic;
+}
+</style>
+{{ form_start(form) }}
+{{ form_errors(form) }}
+{% if form.evenements is defined %}
+  <div class="boite-choix">
+    <h3>{{ form.evenements.vars.label }}</h3>
+    {{ form_errors(form.evenements) }}
+    {% for evenement in form.evenements %}
+      <div class='checkrow'><label>{{ form_widget(evenement) }} {{ evenement.vars.label }}</label></div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+
+  {% for ff in form.evenementformule %}
+    {% if loop.index0 == 0 %}
+      <div class="checkrow">
+        {{ form.evenementformule.vars.label }} :
+      </div>
+    {% endif %}
+    <div class='checkrow'>
+      <label>{{ form_widget(ff) }} {{ ff.vars.label }}</label>
+    </div>
+  {% endfor %}
+
+
+{{form_rest(form)}}
+
+{{form_end(form)}}
+<script>
+jQuery('document').ready(function(){
+  jQuery('textarea#ocim_evenementsbundle_inscription_attentes').attr('maxlength', '300').after(jQuery('<p id="countchar"><span>300</span> caractères restants (300 max)</p>'));
+  jQuery('textarea#ocim_evenementsbundle_inscription_attentes').keyup(function(){
+    jQuery('#countchar>span').html(300 - jQuery('textarea#ocim_evenementsbundle_inscription_attentes').val().length);
+  });
+});
+</script>

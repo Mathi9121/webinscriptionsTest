@@ -1,0 +1,192 @@
+{% extends '::app.html.twig' %}
+
+{% block stylesheets %}
+  {{parent()}}
+  {% stylesheets
+    '%kernel.root_dir%/Resources/public/css/dataTables.min.css'
+    filter='cssrewrite' %}
+  <link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+  {% endstylesheets %}
+{% endblock %}
+
+{% block  javascripts %}
+{{parent()}}
+{% javascripts
+'%kernel.root_dir%/Resources/public/js/dataTables.min.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script>
+$(document).ready(function() {
+
+  //init de datatables.js
+  var datatable = $('#datatable').dataTable({
+    // "ajax": "data/arrays.txt"
+    language: {
+      "sProcessing":     "Traitement en cours...",
+      "sSearch":         "Rechercher&nbsp;:",
+      "sLengthMenu":     "Afficher _MENU_ &eacute;l&eacute;ments",
+      "sInfo":           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+      "sInfoEmpty":      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+      "sInfoFiltered":   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+      "sInfoPostFix":    "",
+      "sLoadingRecords": "Chargement en cours...",
+      "sZeroRecords":    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+      "sEmptyTable":     "Aucune donn&eacute;e disponible dans le tableau",
+      "oPaginate": {
+        "sFirst":      "Premier",
+        "sPrevious":   "Pr&eacute;c&eacute;dent",
+        "sNext":       "Suivant",
+        "sLast":       "Dernier"
+      },
+      "oAria": {
+        "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+        "sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+      }
+    },
+    "columnDefs": [ { "targets": 18, "orderable": false } ],
+    "order": [[ 0, "desc" ]],
+    'sDom': '<l><"group"><"table-container"t>ipr',
+  });
+
+  $('#search-box').keyup(function(e){
+    datatable.fnFilter( $(this).val() );
+  });
+
+});
+
+
+</script>
+{% endblock %}
+
+{% block title %}Liste des contacts{% endblock %}
+{% block titre %}Liste des contacts{% endblock %}
+
+{% block controls %}
+<a href="{{path('intervenants_new')}}" class="btn btn-green"><i class="fa fa-plus fa-fw"></i>Nouvel Intervenant</a>
+<input type='search' id="search-box" placeholder="Recherche"/>
+{% endblock %}
+
+{% block body -%}
+  <div class="panel">
+  <div class="panel-body">
+    <table class="table-bordered" id="datatable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Civilité</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Structure</th>
+                <th>Fonction</th>
+                <th>Adresse</th>
+                <th>Code Postal</th>
+                <th>Ville</th>
+                <th>Téléphone</th>
+                <th>Mail</th>
+                <th>Type</th>
+                <th>Evenement</th>
+                <th>Statut</th>
+                <th>Formule</th>
+                <th>Nom Financeur</th>
+                <th>Type Financeur</th>
+                <th>Tags</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody>
+
+          {% for entity in entities %}
+            {% if entity.nom is not null %}
+              <tr>
+                  <td>{{ entity.id }}</td>
+                  <td>{{ entity.civilite }}</td>
+                  <td>{{ entity.nom }}</td>
+                  <td>{{ entity.prenom }}</td>
+                  <td>{{ (entity.adresse)? entity.adresse.nomStructure }}</td>
+                  <td>{{ entity.fonction }}</td>
+                  <td>{{ (entity.adresse)? entity.adresse.adresse }}</td>
+                  <td>{{ (entity.adresse)? entity.adresse.cP }}</td>
+                  <td>{{ (entity.adresse)? entity.adresse.ville }}</td>
+                  <td style="white-space:nowrap">{{ entity.tel }}</td>
+                  <td>{{ entity.mail }}</td>
+                  <td>{{ entity.type }}</td>
+                  <td>
+                    {% if entity.type == "stagiaire" %}
+                      {% for inscription in entity.inscription %}
+                        {{ inscription.evenementformule.evenement.intitule }}<br/>
+                      {% endfor %}
+                    {% elseif entity.type == "intervenant" %}
+                      {% for evenement in entity.evenements %}
+                        {{ evenement.intitule }}<br/>
+                      {% endfor %}
+                    {% endif %}
+                  </td>
+                  <td style="white-space:nowrap">
+                    {% if (entity.type == "stagiaire") %}
+                      {% for inscr in entity.inscription %}
+                        {{ inscr.statut }}<br/>
+                      {% endfor %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if (entity.type == "stagiaire") %}
+                      {% for inscr in entity.inscription %}
+                      <abbr title="{{ inscr.evenementformule.formule.tarif }} : {{ inscr.evenementformule.formule.description }}">
+                        {{ inscr.evenementformule.formule.id }}
+                        {{ (inscr.evenementformule.formule.nuit)? "<i class='fa fa-moon-o fa-fw'></i>" }}
+                      </abbr><br/>
+                      {% endfor %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if (entity.type == "stagiaire")and(entity.inscription|length != 0) %}
+                      {% if (entity.inscription.0.signataire is not null)and(entity.inscription.0.signataire.adresse is not null) %}
+                        {{ entity.inscription.0.signataire.adresse.nomStructure }}
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if (entity.type == "stagiaire")and(entity.inscription|length != 0) %}
+                      {% if (entity.inscription.0.signataire is not null)and((entity.inscription.0.signataire.adresse is not null)and(entity.inscription.0.signataire.adresse.type is not null)) %}
+                        {{ entity.inscription.0.signataire.adresse.type.type }}
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if (entity.adresse is not null)and(entity.adresse.tags|length > 0) %}
+                      {{ entity.adresse.tags|join(', ') }}
+                    {% endif %}
+                  </td>
+                  <td>
+    						      <a href="
+                        {% if(entity.type == 'intervenant') %}
+                          {{ path('personne_show', { 'id': entity.id }) }}
+                        {% else %}
+                          {% if (entity.inscription|length != 0) %}
+                          {{ path('inscription_show', { 'idevenement': entity.inscription.0.id ,'id': entity.inscription.0.id, 'type':entity.type}) }}#{{entity.type}}
+                          {% endif %}
+                        {% endif %}
+                        ">
+                        <span class="fa-stack">
+                          <i class="fa fa-square fa-stack-2x"></i>
+                          <i class="fa fa-info fa-stack-1x fa-inverse"></i>
+                        </span>
+                      </a>
+                    {% if(entity.type == 'intervenant') %}
+                      <a href="{{path('intervenants_edit', {'id': entity.id})}}">
+                        <span class="fa-stack">
+                          <i class="fa fa-square fa-stack-2x"></i>
+                          <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  </div>
+{% endblock %}

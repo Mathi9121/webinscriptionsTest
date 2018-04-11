@@ -1,0 +1,30 @@
+signataire:
+    path:     /
+    defaults: { _controller: "OCIMContactsBundle:Signataire:index" }
+
+signataire_show:
+    path:     /{id}/show
+    defaults: { _controller: "OCIMContactsBundle:Signataire:show" }
+
+signataire_new:
+    path:     /evenement-{idevenement}/inscription-{idinscription}/new
+    defaults: { _controller: "OCIMContactsBundle:Signataire:new" }
+
+signataire_create:
+    path:     /evenement-{idevenement}/{idinscription}/create
+    defaults: { _controller: "OCIMContactsBundle:Signataire:create" }
+    requirements: { _method: post }
+
+signataire_edit:
+    path:     /evenement-{idevenement}/{id}/edit
+    defaults: { _controller: "OCIMContactsBundle:Signataire:edit" }
+
+signataire_update:
+    path:     /evenement-{idevenement}/{id}/update
+    defaults: { _controller: "OCIMContactsBundle:Signataire:update" }
+    requirements: { _method: post|put }
+
+signataire_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "OCIMContactsBundle:Signataire:delete" }
+    requirements: { _method: post|delete }

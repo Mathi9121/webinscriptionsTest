@@ -1,0 +1,25 @@
+{% extends '::app.html.twig' %}
+
+{% block title %}Détails de la champPerso{% endblock %}
+{% block titre %}informations champPersos{% endblock %}
+
+{% block controls %}
+	{{ form(delete_form) }}
+{% endblock %}
+
+{% block body -%}
+
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+	<a href="{{ path('champPerso') }}"><span class="oi" data-glyph="arrow-thick-left"></span> Retour à la champPerso</a>
+	<a href="{{ path('champPerso_edit', { 'id': entity.id }) }}"><span class="oi" data-glyph="pencil"></span> Edit</a>
+
+{% endblock %}

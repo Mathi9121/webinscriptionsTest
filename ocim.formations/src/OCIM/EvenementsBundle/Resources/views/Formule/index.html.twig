@@ -1,0 +1,66 @@
+{% extends '::app.html.twig' %}
+
+{#
+{% block  javascripts %}
+{% endblock %}
+ #}
+{% block title %}Formules{% endblock %}
+{% block titre %}Toutes les formules{% endblock %}
+
+
+{% block controls %}
+<a href="{{ path('formule_new') }}" class="btn btn-green btn-outline"><i class="fa fa-plus"></i> Nouvelle Formule</a>
+{% endblock %}
+
+
+{% block body -%}
+
+<div class="panel">
+	<div class="header">
+		<span class="titre">Formules enregistrées</span>
+			<span class="controls right group">
+
+			</span>
+	</div>
+
+	<div class="panel-body">
+		<table class="table-hovered width-100">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Description</th>
+					<th>Tarif</th>
+					<th class="text-centered"><i class="fa fa-cutlery fa-fw"></i>Midi</th>
+					<th class="text-centered"><i class="fa fa-cutlery fa-fw"></i>Soir</th>
+					<th class="text-centered"><i class="fa fa-moon-o fa-fw"></i>Nuit</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for entity in entities %}
+				<tr class="{{((id is defined)and( id == entity.id ))? "highlight"}}">
+					{# <td><a href="{{ path('formule_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td> #}
+					<td style="padding:0">
+						<span class="label label-outline" title="Nombre d'inscriptions à cette formule"><i class="fa fa-users" ></i> {{ entity._countInscriptions.1}}</span>
+						<span class="label label-outline" title="Nombre de evenements proposant cette formule"><i class="fa fa-graduation-cap"></i> {{ entity._countEvenements.1}}</span>
+					</td>
+					<td>{{ entity.description|capitalize }}</td>
+					<td>{{ entity.tarif }} {% if entity.tarif|number_format %}€{% endif %}</td>
+					{% if entity.midi == 1 %}<td class="text-centered" style="background-color: #f6f6f6"><i class="fa fa-check"></i>{% else %}<td>{% endif %}</td>
+					{% if entity.soir == 1 %}<td class="text-centered" style="background-color: #f6f6f6"><i class="fa fa-check"></i>{% else %}<td>{% endif %}</td>
+					{% if entity.nuit == 1 %}<td class="text-centered" style="background-color: #f6f6f6"><i class="fa fa-check"></i>{% else %}<td>{% endif %}</td>
+					<td>
+						<a class="btn-small btn-green btn-outline right" href="{{ path('formule_edit', { 'id': entity.id }) }}"><i class="fa fa-pencil"></i></a>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3" class="text-right">Nombre total de formules</td>
+					<td colspan="3">{{entities|length}}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+    {% endblock %}
